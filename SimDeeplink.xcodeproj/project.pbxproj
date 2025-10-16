@@ -1,0 +1,548 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		A041F0BF2EA0D4C70053DE8F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A041F0A52EA0D4C60053DE8F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A041F0AC2EA0D4C60053DE8F;
+			remoteInfo = SimDeeplink;
+		};
+		A041F0C92EA0D4C70053DE8F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A041F0A52EA0D4C60053DE8F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A041F0AC2EA0D4C60053DE8F;
+			remoteInfo = SimDeeplink;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A041F0AD2EA0D4C60053DE8F /* SimDeeplink.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimDeeplink.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A041F0BE2EA0D4C70053DE8F /* SimDeeplinkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimDeeplinkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A041F0C82EA0D4C70053DE8F /* SimDeeplinkUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimDeeplinkUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A041F0AF2EA0D4C60053DE8F /* SimDeeplink */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SimDeeplink;
+			sourceTree = "<group>";
+		};
+		A041F0C12EA0D4C70053DE8F /* SimDeeplinkTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SimDeeplinkTests;
+			sourceTree = "<group>";
+		};
+		A041F0CB2EA0D4C70053DE8F /* SimDeeplinkUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SimDeeplinkUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A041F0AA2EA0D4C60053DE8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A041F0BB2EA0D4C70053DE8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A041F0C52EA0D4C70053DE8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A041F0A42EA0D4C60053DE8F = {
+			isa = PBXGroup;
+			children = (
+				A041F0AF2EA0D4C60053DE8F /* SimDeeplink */,
+				A041F0C12EA0D4C70053DE8F /* SimDeeplinkTests */,
+				A041F0CB2EA0D4C70053DE8F /* SimDeeplinkUITests */,
+				A041F0AE2EA0D4C60053DE8F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A041F0AE2EA0D4C60053DE8F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A041F0AD2EA0D4C60053DE8F /* SimDeeplink.app */,
+				A041F0BE2EA0D4C70053DE8F /* SimDeeplinkTests.xctest */,
+				A041F0C82EA0D4C70053DE8F /* SimDeeplinkUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A041F0AC2EA0D4C60053DE8F /* SimDeeplink */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A041F0D22EA0D4C70053DE8F /* Build configuration list for PBXNativeTarget "SimDeeplink" */;
+			buildPhases = (
+				A041F0A92EA0D4C60053DE8F /* Sources */,
+				A041F0AA2EA0D4C60053DE8F /* Frameworks */,
+				A041F0AB2EA0D4C60053DE8F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A041F0AF2EA0D4C60053DE8F /* SimDeeplink */,
+			);
+			name = SimDeeplink;
+			packageProductDependencies = (
+			);
+			productName = SimDeeplink;
+			productReference = A041F0AD2EA0D4C60053DE8F /* SimDeeplink.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A041F0BD2EA0D4C70053DE8F /* SimDeeplinkTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A041F0D52EA0D4C70053DE8F /* Build configuration list for PBXNativeTarget "SimDeeplinkTests" */;
+			buildPhases = (
+				A041F0BA2EA0D4C70053DE8F /* Sources */,
+				A041F0BB2EA0D4C70053DE8F /* Frameworks */,
+				A041F0BC2EA0D4C70053DE8F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A041F0C02EA0D4C70053DE8F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A041F0C12EA0D4C70053DE8F /* SimDeeplinkTests */,
+			);
+			name = SimDeeplinkTests;
+			packageProductDependencies = (
+			);
+			productName = SimDeeplinkTests;
+			productReference = A041F0BE2EA0D4C70053DE8F /* SimDeeplinkTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A041F0C72EA0D4C70053DE8F /* SimDeeplinkUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A041F0D82EA0D4C70053DE8F /* Build configuration list for PBXNativeTarget "SimDeeplinkUITests" */;
+			buildPhases = (
+				A041F0C42EA0D4C70053DE8F /* Sources */,
+				A041F0C52EA0D4C70053DE8F /* Frameworks */,
+				A041F0C62EA0D4C70053DE8F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A041F0CA2EA0D4C70053DE8F /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A041F0CB2EA0D4C70053DE8F /* SimDeeplinkUITests */,
+			);
+			name = SimDeeplinkUITests;
+			packageProductDependencies = (
+			);
+			productName = SimDeeplinkUITests;
+			productReference = A041F0C82EA0D4C70053DE8F /* SimDeeplinkUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A041F0A52EA0D4C60053DE8F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					A041F0AC2EA0D4C60053DE8F = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					A041F0BD2EA0D4C70053DE8F = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = A041F0AC2EA0D4C60053DE8F;
+					};
+					A041F0C72EA0D4C70053DE8F = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = A041F0AC2EA0D4C60053DE8F;
+					};
+				};
+			};
+			buildConfigurationList = A041F0A82EA0D4C60053DE8F /* Build configuration list for PBXProject "SimDeeplink" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A041F0A42EA0D4C60053DE8F;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A041F0AE2EA0D4C60053DE8F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A041F0AC2EA0D4C60053DE8F /* SimDeeplink */,
+				A041F0BD2EA0D4C70053DE8F /* SimDeeplinkTests */,
+				A041F0C72EA0D4C70053DE8F /* SimDeeplinkUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A041F0AB2EA0D4C60053DE8F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A041F0BC2EA0D4C70053DE8F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A041F0C62EA0D4C70053DE8F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A041F0A92EA0D4C60053DE8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A041F0BA2EA0D4C70053DE8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A041F0C42EA0D4C70053DE8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A041F0C02EA0D4C70053DE8F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A041F0AC2EA0D4C60053DE8F /* SimDeeplink */;
+			targetProxy = A041F0BF2EA0D4C70053DE8F /* PBXContainerItemProxy */;
+		};
+		A041F0CA2EA0D4C70053DE8F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A041F0AC2EA0D4C60053DE8F /* SimDeeplink */;
+			targetProxy = A041F0C92EA0D4C70053DE8F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A041F0D02EA0D4C70053DE8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A041F0D12EA0D4C70053DE8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		A041F0D32EA0D4C70053DE8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SimDeeplink/SimDeeplink.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SimDeeplink/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AppWork.SimDeeplink;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A041F0D42EA0D4C70053DE8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SimDeeplink/SimDeeplink.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SimDeeplink/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AppWork.SimDeeplink;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		A041F0D62EA0D4C70053DE8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AppWork.SimDeeplinkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimDeeplink.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimDeeplink";
+			};
+			name = Debug;
+		};
+		A041F0D72EA0D4C70053DE8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AppWork.SimDeeplinkTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimDeeplink.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimDeeplink";
+			};
+			name = Release;
+		};
+		A041F0D92EA0D4C70053DE8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AppWork.SimDeeplinkUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = SimDeeplink;
+			};
+			name = Debug;
+		};
+		A041F0DA2EA0D4C70053DE8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AppWork.SimDeeplinkUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = SimDeeplink;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A041F0A82EA0D4C60053DE8F /* Build configuration list for PBXProject "SimDeeplink" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A041F0D02EA0D4C70053DE8F /* Debug */,
+				A041F0D12EA0D4C70053DE8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A041F0D22EA0D4C70053DE8F /* Build configuration list for PBXNativeTarget "SimDeeplink" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A041F0D32EA0D4C70053DE8F /* Debug */,
+				A041F0D42EA0D4C70053DE8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A041F0D52EA0D4C70053DE8F /* Build configuration list for PBXNativeTarget "SimDeeplinkTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A041F0D62EA0D4C70053DE8F /* Debug */,
+				A041F0D72EA0D4C70053DE8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A041F0D82EA0D4C70053DE8F /* Build configuration list for PBXNativeTarget "SimDeeplinkUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A041F0D92EA0D4C70053DE8F /* Debug */,
+				A041F0DA2EA0D4C70053DE8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A041F0A52EA0D4C60053DE8F /* Project object */;
+}
