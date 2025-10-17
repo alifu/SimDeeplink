@@ -1,5 +1,5 @@
 //
-//  SimDeeplinkApp.swift
+//  AppDelegate.swift
 //  SimDeeplink
 //
 //  Created by Alif on 16/10/25.
@@ -7,15 +7,9 @@
 
 import SwiftUI
 
-@main
-struct SimDeeplinkApp: App {
-    
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    var body: some Scene {
-        Settings {
-            Text("Settings or main app window")
-        }
-    }
+class KeyWindow: NSWindow {
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { true }
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -28,7 +22,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let button = statusBarItem?.button {
             button.action = #selector(statusBarButtonClicked(_:))
             button.target = self
-            button.image = NSImage(systemSymbolName: "star.fill", accessibilityDescription: nil)
+            if let image = NSImage(named: "simdeeplink_bar") {
+                image.isTemplate = true
+                    image.size = NSSize(width: 18, height: 14)
+                    button.image = image
+                    button.imagePosition = .imageOnly
+            }
         }
         
         NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
@@ -38,59 +37,84 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    func applicationWillTerminate(_ notification: Notification) {
+        if statusBarItem != nil {
+            NSStatusBar.system.removeStatusItem(statusBarItem!)
+            statusBarItem = nil
+        }
+    }
+    
     @objc func statusBarButtonClicked(_ sender: NSStatusBarButton) {
-        let windowWidth: CGFloat = 150
-        let windowHeight: CGFloat = 150
+        let windowWidth: CGFloat = 500
+        let windowHeight: CGFloat = 300
         
-        guard let buttonWindow = sender.window else { return }
-        guard let screen = buttonWindow.screen else { return }
-
-        // Convert the button’s bounds to screen coordinates (fresh every time)
+        guard let buttonWindow = sender.window,
+              let screen = buttonWindow.screen ?? NSScreen.main else { return }
+        
+        // Convert button bounds to screen coordinates
         let buttonFrameInWindow = sender.convert(sender.bounds, to: nil)
         let buttonOriginOnScreen = buttonWindow.convertPoint(toScreen: buttonFrameInWindow.origin)
         
-        // macOS coordinate bug workaround:
-        // If the app just became active, screen coordinates can lag one frame.
-        // Force window updates before positioning.
+        // Force layout refresh
         NSApp.activate(ignoringOtherApps: false)
         buttonWindow.displayIfNeeded()
-
-        // Calculate Y position directly below the menubar
-        let x = buttonOriginOnScreen.x + (sender.frame.width / 2) - (windowWidth / 2)
-        let y = buttonOriginOnScreen.y - windowHeight - 4 // small gap
+        
+        // --- Base position ---
+        var x = buttonOriginOnScreen.x + (sender.frame.width / 2) - (windowWidth / 2)
+        var y = buttonOriginOnScreen.y - windowHeight - 4 // default: below menubar
+        
+        let screenFrame = screen.visibleFrame
+        let minX = screenFrame.minX + 10
+        let maxX = screenFrame.maxX - windowWidth - 10
+        
+        // --- Horizontal Clamping ---
+        if x < minX { x = minX }
+        if x > maxX { x = maxX }
+        
+        // --- Detect menubar position ---
+        let isMenuBarAtTop = buttonOriginOnScreen.y > (screenFrame.midY)
+        
+        if !isMenuBarAtTop {
+            // menubar is at bottom (e.g. user moved it)
+            y = buttonOriginOnScreen.y + sender.frame.height + 4
+        }
         
         let windowRect = NSRect(x: x, y: y, width: windowWidth, height: windowHeight)
-
+        
         // Build or reuse window
         window = getOrBuildWindow(size: windowRect)
         
         // Toggle visibility
         toggleWindowVisibility(location: NSPoint(x: x, y: y))
     }
-
-
     
     func getOrBuildWindow(size: NSRect) -> NSWindow {
         if window == nil {
-            let contentView = SimDeeplinkVIew()
-            window = NSWindow(
+            let contentView = SimDeeplinkView()
+            let hostingView = NSHostingView(rootView: contentView)
+            
+            window = KeyWindow(
                 contentRect: size,
                 styleMask: [.borderless],
                 backing: .buffered,
                 defer: false
             )
-//            window?.isOpaque = false
-//            window?.backgroundColor = .clear
-            window?.contentView = NSHostingView(rootView: contentView)
+            window?.contentView = hostingView
             window?.isReleasedWhenClosed = false
             window?.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary]
             window?.level = .floating
             window?.hasShadow = true
+            window?.backgroundColor = .clear  // important for rounded corners
+            
+            // 💫 Round the corners
+            hostingView.wantsLayer = true
+            hostingView.layer?.cornerRadius = 12
+            hostingView.layer?.masksToBounds = true
         }
+
         window?.setFrame(size, display: true)
         return window!
     }
-
     
     func toggleWindowVisibility(location: NSPoint) {
         // window hasn't been built yet, don't do anything
@@ -116,5 +140,4 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let menuBarHeight = screenFrame!.height - desktopFrame.height
         return menuBarHeight
     }
-    
 }
