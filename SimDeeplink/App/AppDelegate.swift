@@ -18,7 +18,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var statusBarItem: NSStatusItem?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
-        statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        if statusBarItem == nil {
+            statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        }
+        
         if let button = statusBarItem?.button {
             button.action = #selector(statusBarButtonClicked(_:))
             button.target = self
