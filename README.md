@@ -1,6 +1,14 @@
 # SimDeeplink (Menu Bar)
 
+<p align="center">
+  <img src="./doc/main-icon.png" alt="icon" width="128"/>
+</p>
+
 SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and running app deeplinks in Simulator effortless. Unlike other solutions, there’s no need to drag and drop URLs onto Simulator—you simply paste and run! The app lives comfortably in your macOS menu bar, allowing quick access at any time.
+
+<p align="center">
+  <img src="./doc/preview-app.png" alt="preview" width="500"/>
+</p>
 
 ## ✨ Features
 
