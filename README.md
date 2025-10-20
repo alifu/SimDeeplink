@@ -18,30 +18,63 @@ SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and 
 - **Menu Bar Access:** Launch and use the app from your menu bar on any Mac desktop, for maximum convenience.
 - **Simulator Booting:** The app can automatically boot the Simulator if it’s not running, so you can execute deeplinks immediately.
 
-## 🚀 Getting Started
+## 🧭 Installation
 
-### Prerequisites
-- Xcode 15 or later  
-- MacOS 14.0+ target  
-- Swift 5.9+
+### 🪄 Using Homebrew (Recommended)
 
-### Installation
+You can install `SimDeeplink` directly via `Homebrew`:
 
-1. Clone this repository:
+  ```bash
+  brew install --cask alifu/tap/simdeeplink
+  ```
 
-   ```bash
-   git clone https://github.com/alifu/SimDeeplink.git
-   cd SimDeeplink
-   ```
-2. Open the project:
+Once installed, you can open it from Launchpad or via:
 
-   ```bash
-   open SimDeeplink.xcodeproj
-   ```
-3. Select the appropriate target and scheme (usually 'SimDeeplink' or similar).
-4. Build and run (⌘R). The app should appear in your menu bar.
+  ```bash
+  open -a SimDeeplink
+  ```
 
-> For now, the only way to run the app is from source. Pre-built binaries and a Homebrew formula are planned for the future.
+💡 Tip: You only need to add the tap (alifu/tap) the first time.
+Future updates can be installed with:
+
+  ```bash
+  brew upgrade --cask simdeeplink
+  ```
+
+### ⚠️ Handling Homebrew Warnings
+
+If you see a warning like:
+
+> Warning: Cask 'simdeeplink' is not notarized and may not be trusted by macOS.
+
+or
+
+> “SimDeeplink.app” can’t be opened because Apple cannot check it for malicious software.
+
+This is expected if the app is not yet notarized (since we’re not using an Apple Developer account).
+
+To run it safely:
+1. Open `System Settings` → `Privacy & Security`
+2. Scroll down until you see the blocked app message
+3. Click **“Open Anyway”**
+4. Then confirm by clicking **“Open”** in the popup
+
+macOS will remember your choice, and you won’t see the warning again.
+
+### 🧰 Manual Installation (Alternative)
+
+If you prefer manual installation:
+1. Download the latest release from GitHub Releases
+2. Unzip the file
+3. Move SimDeeplink.app to your Applications folder
+
+### ✅ Uninstallation
+
+To uninstall SimDeeplink and remove its configuration files:
+
+  ```bash
+  brew uninstall --zap --cask simdeeplink
+  ```
 
 ## 💡 Why Use This?
 - Eliminate repetitive drag-and-drop steps for deeplink testing.
@@ -61,6 +94,29 @@ SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and 
 
 ## ⚙️ Contributing
 Contributions and feedback are welcome! Please open an issue or submit a pull request with ideas or improvements.
+
+### 🚀 Getting Started
+
+#### Prerequisites
+- Xcode 15 or later  
+- MacOS 14.0+ target  
+- Swift 5.9+
+
+#### Installation
+
+1. Clone this repository:
+
+   ```bash
+   git clone https://github.com/alifu/SimDeeplink.git
+   cd SimDeeplink
+   ```
+2. Open the project:
+
+   ```bash
+   open SimDeeplink.xcodeproj
+   ```
+3. Select the appropriate target and scheme (usually 'SimDeeplink' or similar).
+4. Build and run (⌘R). The app should appear in your menu bar.
 
 ## 🪪 License
 MIT License. See [`LICENSE`](./LICENSE) for details.
