@@ -1,8 +1,8 @@
-# SimDeeplink (Menu Bar)
-
 <p align="center">
   <img src="./doc/main-icon.png" alt="icon" width="128"/>
 </p>
+
+# SimDeeplink (Menu Bar)
 
 SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and running app deeplinks in Simulator effortless. Unlike other solutions, there’s no need to drag and drop URLs onto Simulator—you simply paste and run! The app lives comfortably in your macOS menu bar, allowing quick access at any time.
 
@@ -13,6 +13,8 @@ SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and 
 ## ✨ Features
 
 - **Paste and Run Deeplinks Instantly:** Just paste your deeplink and run it in Simulator—no drag-and-drop required.
+- **Delay:** Add delay to wait for the simulator to be ready to watch.
+- **Specific Simulator Target:** Choose your right target for running deeplink.
 - **Menu Bar Access:** Launch and use the app from your menu bar on any Mac desktop, for maximum convenience.
 - **Simulator Booting:** The app can automatically boot the Simulator if it’s not running, so you can execute deeplinks immediately.
 
@@ -20,7 +22,7 @@ SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and 
 
 ### Prerequisites
 - Xcode 15 or later  
-- MacOS 15.2+ target  
+- MacOS 14.0+ target  
 - Swift 5.9+
 
 ### Installation
@@ -50,10 +52,10 @@ SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and 
 ## 🧪 Roadmap
 
 | Status | Feature |
-|-------|-----|
+|:-------:|-----|
 |✅|**Running Deeplink:** Just paste the deeplink and GO!|
 |✅|**Simulator Section:** Choose and boot the XCode Simulator without XCode (We can disabled this feature if no needed)|
-|🚧|**Add Timer for Deeplink Execution:** Allow users to specify a delay before running a deeplink, making it easier to wait for the simulator to be ready.|
+|✅|**Add Timer for Deeplink Execution:** Allow users to specify a delay before running a deeplink, making it easier to wait for the simulator to be ready.|
 |🚧|**Android Emulator Support:** Enable deeplink runs in Android Emulator for cross-platform testing.|
 |🚧|**Distribute via Homebrew:** Publish the app through Homebrew for easy installation. Currently, run the project from source as described above.|
 
@@ -61,7 +63,7 @@ SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and 
 Contributions and feedback are welcome! Please open an issue or submit a pull request with ideas or improvements.
 
 ## 🪪 License
-MIT License. See `LICENSE` for details.
+MIT License. See [`LICENSE`](./LICENSE) for details.
 
 ---
 

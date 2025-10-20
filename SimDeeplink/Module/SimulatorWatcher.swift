@@ -10,6 +10,7 @@ import Combine
 
 final class SimulatorWatcher: ObservableObject {
     @Published var simulators: [Simulator] = []
+    @Published var bootedSimulators: [Simulator] = []
     @Published var isEnabled: Bool = false {
         didSet {
             if isEnabled {
@@ -26,14 +27,10 @@ final class SimulatorWatcher: ObservableObject {
     init() {}
     
     func startWatching() {
+        stopWatching()
+        observeSimulatorEvents()
         refreshSimulators()
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
-            guard let `self` = self else { return }
-            self.refreshSimulators()          // Initial load
-            self.startPolling()               // Keep updating
-            self.observeSimulatorEvents()     // Listen for instant changes
-        }
+        startPolling()
     }
     
     func stopWatching() {
@@ -48,6 +45,16 @@ final class SimulatorWatcher: ObservableObject {
             DispatchQueue.main.async {
                 let iPhones = newList.filter { $0.type == .iPhone }
                 self.simulators = iPhones
+            }
+        }
+    }
+    
+    func refreshBootedSimulators() {
+        DispatchQueue.global(qos: .background).async {
+            let newList = self.getBootedSimulators()
+            DispatchQueue.main.async {
+                let iPhones = newList.filter { $0.type == .iPhone }
+                self.bootedSimulators = iPhones
             }
         }
     }
@@ -93,7 +100,7 @@ final class SimulatorWatcher: ObservableObject {
         }
     }
     
-    func runShellCommand(_ command: String) -> String? {
+    private func runShellCommand(_ command: String) -> String? {
         let process = Process()
         let pipe = Pipe()
         
@@ -113,30 +120,84 @@ final class SimulatorWatcher: ObservableObject {
         return String(data: data, encoding: .utf8)
     }
     
-    
-    func getBootedSimulators() -> [String] {
-        guard let output = runShellCommand("xcrun simctl list devices") else {
+    private func getBootedSimulators() -> [Simulator] {
+        // 1️⃣ Get runtime versions first (for full iOS version names)
+        var runtimeVersions: [String: String] = [:]
+        if let runtimeOutput = runShellCommand("xcrun simctl list runtimes --json"),
+           let data = runtimeOutput.data(using: .utf8),
+           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let runtimes = json["runtimes"] as? [[String: Any]] {
+            for runtime in runtimes {
+                if let name = runtime["name"] as? String,
+                   let version = runtime["version"] as? String {
+                    runtimeVersions[name] = version
+                }
+            }
+        }
+        
+        // 2️⃣ Get devices in JSON for reliable parsing
+        guard let output = runShellCommand("xcrun simctl list devices --json"),
+              let data = output.data(using: .utf8),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let devicesDict = json["devices"] as? [String: [[String: Any]]] else {
             return []
         }
         
-        // Split into lines
-        let lines = output.split(separator: "\n").map { String($0) }
+        var bootedSimulators: [Simulator] = []
         
-        // Filter only lines that contain "(Booted)"
-        let bootedLines = lines.filter { $0.contains("(Booted)") }
-        
-        // Extract device name before the first "("
-        let bootedDevices = bootedLines.map { line -> String in
-            if let namePart = line.split(separator: "(").first {
-                return namePart.trimmingCharacters(in: .whitespaces)
+        // 3️⃣ Iterate through all runtimes
+        for (runtimeKey, devices) in devicesDict {
+            // Normalize runtime label
+            var runtimeName = runtimeKey
+                .replacingOccurrences(of: "com.apple.CoreSimulator.SimRuntime.", with: "")
+                .replacingOccurrences(of: "-", with: " ")
+                .replacingOccurrences(of: "ios", with: "iOS ")
+                .capitalized
+            
+            // Try to replace with known version mapping (from runtimes)
+            if let fullVersion = runtimeVersions[runtimeName] {
+                runtimeName = "\(runtimeName) (\(fullVersion))"
             }
-            return line
+            
+            // 4️⃣ Parse each device
+            for device in devices {
+                guard
+                    let name = device["name"] as? String,
+                    let udid = device["udid"] as? String,
+                    let state = device["state"] as? String,
+                    state == "Booted"
+                else { continue }
+                
+                let lowerName = name.lowercased()
+                let type: SimulatorType
+                if lowerName.contains("iphone") {
+                    type = .iPhone
+                } else if lowerName.contains("ipad") {
+                    type = .iPad
+                } else if lowerName.contains("watch") {
+                    type = .watch
+                } else if lowerName.contains("tv") {
+                    type = .tv
+                } else {
+                    type = .unknown
+                }
+                
+                bootedSimulators.append(
+                    Simulator(
+                        name: name,
+                        udid: udid,
+                        runtime: runtimeName,
+                        isBooted: true,
+                        type: type
+                    )
+                )
+            }
         }
         
-        return bootedDevices
+        return bootedSimulators
     }
     
-    func getAvailableSimulators() -> [Simulator] {
+    private func getAvailableSimulators() -> [Simulator] {
         // 1️⃣ Get runtime versions first (to get iOS 18.3.1, etc.)
         var runtimeVersions: [String: String] = [:]
         if let runtimeOutput = runShellCommand("xcrun simctl list runtimes --json"),
@@ -210,13 +271,13 @@ final class SimulatorWatcher: ObservableObject {
         return simulators
     }
     
-    func runDeeplink(url: String) -> String {
+    func runDeeplink(url: String, target: String = "booted") -> String {
         let process = Process()
         let pipe = Pipe()
         process.standardOutput = pipe
         process.standardError = pipe
         process.executableURL = URL(fileURLWithPath: "/usr/bin/xcrun")
-        process.arguments = ["simctl", "openurl", "booted", url]
+        process.arguments = ["simctl", "openurl", target, url]
         
         do {
             try process.run()

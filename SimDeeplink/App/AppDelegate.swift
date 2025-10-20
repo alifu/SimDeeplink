@@ -47,9 +47,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    @objc func quitApp() {
+        if let item = statusBarItem {
+            NSStatusBar.system.removeStatusItem(item)
+            statusBarItem = nil
+        }
+
+        // Gracefully end the app
+        NSApp.terminate(nil)
+
+        // Safety fallback (ensures no ghost icon)
+        exit(0)
+    }
+    
     @objc func statusBarButtonClicked(_ sender: NSStatusBarButton) {
         let windowWidth: CGFloat = 500
-        let windowHeight: CGFloat = 300
+        let windowHeight: CGFloat = 450
         
         guard let buttonWindow = sender.window,
               let screen = buttonWindow.screen ?? NSScreen.main else { return }
@@ -93,7 +106,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func getOrBuildWindow(size: NSRect) -> NSWindow {
         if window == nil {
-            let contentView = SimDeeplinkView()
+            let contentView = SimDeeplinkView(quitAction: { [weak self] in
+                self?.quitApp()
+            })
             let hostingView = NSHostingView(rootView: contentView)
             
             window = KeyWindow(
