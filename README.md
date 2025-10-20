@@ -34,11 +34,14 @@ Once installed, you can open it from Launchpad or via:
   open -a SimDeeplink
   ```
 
-💡 Tip: You only need to add the tap (alifu/tap) the first time.
-Future updates can be installed with:
+💡 Tip: For clean update, please run below command:
 
   ```bash
-  brew upgrade --cask simdeeplink
+  // first uninstall the app
+  brew uninstall --cask alifu/tap/simdeeplink
+
+  // then install again
+  brew install --cask alifu/tap/simdeeplink 
   ```
 
 ### ⚠️ Handling Homebrew Warnings
