@@ -16,7 +16,7 @@ struct SimulatorSectionView: View {
         HStack(alignment: .center, spacing: 12) {
             Text("Simulator").font(.headline)
             
-            SimComboBox(
+            SimulatorComboBox(
                 selectedSimulator: Binding(
                     get: { selectedSimulator ?? nil },
                     set: { newValue in

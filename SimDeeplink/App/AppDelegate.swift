@@ -61,8 +61,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func statusBarButtonClicked(_ sender: NSStatusBarButton) {
-        let windowWidth: CGFloat = 500
-        let windowHeight: CGFloat = 450
+        let windowWidth: CGFloat = 600
+        let windowHeight: CGFloat = 500
         
         guard let buttonWindow = sender.window,
               let screen = buttonWindow.screen ?? NSScreen.main else { return }
