@@ -1,5 +1,5 @@
 //
-//  SimComboBox.swift
+//  SimulatorComboBox.swift
 //  SimDeeplink
 //
 //  Created by Alif on 17/10/25.
@@ -25,7 +25,7 @@ struct Simulator: Identifiable, Equatable {
     let type: SimulatorType
 }
 
-struct SimComboBox: NSViewRepresentable {
+struct SimulatorComboBox: NSViewRepresentable {
     @Binding var selectedSimulator: Simulator?
     @Binding var items: [Simulator]
     
@@ -43,8 +43,8 @@ struct SimComboBox: NSViewRepresentable {
         
         // Show name + runtime + status
         nsView.addItems(withObjectValues: items.map { sim in
-            let bootStatus = sim.isBooted ? "🟢 Booted" : "⚪️"
-            return "\(sim.name) — \(sim.runtime) \(bootStatus)"
+            let bootStatus = sim.isBooted ? "🟢" : "⚪️"
+            return "\(bootStatus) \(sim.name) — \(sim.runtime)"
         })
         
         if let selected = selectedSimulator,
@@ -58,9 +58,9 @@ struct SimComboBox: NSViewRepresentable {
     }
     
     class Coordinator: NSObject, NSComboBoxDelegate {
-        var parent: SimComboBox
+        var parent: SimulatorComboBox
         
-        init(parent: SimComboBox) {
+        init(parent: SimulatorComboBox) {
             self.parent = parent
         }
         func comboBoxSelectionDidChange(_ notification: Notification) {

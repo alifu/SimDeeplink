@@ -12,7 +12,7 @@ struct BootedSimulatorView: View {
     @Binding var selectedSimulator: Simulator?
 
     var body: some View {
-        SimComboBox(
+        SimulatorComboBox(
             selectedSimulator: Binding(
                 get: { selectedSimulator ?? nil },
                 set: { newValue in

@@ -16,9 +16,10 @@
 
 SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and running app deeplinks in Simulator effortless. Unlike other solutions, there’s no need to drag and drop URLs onto Simulator—you simply paste and run! The app lives comfortably in your macOS menu bar, allowing quick access at any time.
 
-<p align="center">
-  <img src="./doc/preview-app.png" alt="preview" width="500"/>
-</p>
+|Apple Simulator|Android Emulator|
+|:---:|:---:|
+|<img src="./doc/preview-app-simulator.png" alt="preview" width="500"/>|<img src="./doc/preview-app-emulator.png" alt="preview" width="500"/>|
+
 
 ## ✨ Features
 
@@ -103,7 +104,7 @@ To uninstall SimDeeplink and remove its configuration files:
 |✅|**Simulator Section:** Choose and boot the XCode Simulator without XCode (We can disabled this feature if no needed)|
 |✅|**Add Timer for Deeplink Execution:** Allow users to specify a delay before running a deeplink, making it easier to wait for the simulator to be ready.|
 |✅|**Distribute via Homebrew:** Publish the app through Homebrew for easy installation. Currently, run the project from source as described above.|
-|🚧|**Android Emulator Support:** Enable deeplink runs in Android Emulator for cross-platform testing.|
+|✅|**Android Emulator Support:** Enable deeplink runs in Android Emulator for cross-platform testing.|
 
 ## ⚙️ Contributing
 Contributions and feedback are welcome! Please open an issue or submit a pull request with ideas or improvements.
