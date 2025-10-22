@@ -9,7 +9,7 @@
 [![Platform](https://img.shields.io/badge/Platform-macOS-blue.svg)](https://developer.apple.com/macos)
 [![Xcode](https://img.shields.io/badge/Xcode-15+-blue.svg)](https://developer.apple.com/xcode/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.0.4-yellow.svg)](https://github.com/alifu/SimDeeplink/releases)
+[![Version](https://img.shields.io/badge/Version-0.0.5-yellow.svg)](https://github.com/alifu/SimDeeplink/releases)
 [![Homebrew Tap](https://img.shields.io/badge/Homebrew-alifu%2Ftap-blue.svg)](https://github.com/alifu/homebrew-tap)
 
 
