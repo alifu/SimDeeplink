@@ -2,7 +2,7 @@
 //  BootedEmulatorView.swift
 //  SimDeeplink
 //
-//  Created by Alif Phincon on 21/10/25.
+//  Created by Alif on 21/10/25.
 //
 
 import SwiftUI

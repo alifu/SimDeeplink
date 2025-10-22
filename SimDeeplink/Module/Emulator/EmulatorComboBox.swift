@@ -15,6 +15,25 @@ struct Emulator: Identifiable, Equatable {
     let isOnline: Bool
 }
 
+struct OfflineEmulator: Identifiable, Equatable {
+    let id = UUID()
+    let name: String
+    let device: String
+    let path: String
+    let apiLevel: String
+    let skin: String
+    let sdcard: String
+    let snapshot: String
+    
+    func toEmulator() -> Emulator {
+        Emulator(
+            name: self.name,
+            serial: "",
+            isOnline: false
+        )
+    }
+}
+
 struct AndroidEmulatorComboBox: NSViewRepresentable {
     @Binding var selectedEmulator: Emulator?
     @Binding var items: [Emulator]

@@ -2,7 +2,7 @@
 //  EmulatorWatcher.swift
 //  SimDeeplink
 //
-//  Created by Alif Phincon on 21/10/25.
+//  Created by Alif on 21/10/25.
 //
 
 import SwiftUI
@@ -11,13 +11,24 @@ import Combine
 final class EmulatorWatcher: ObservableObject {
     
     @Published var adbPaths: [String] = []
+    @Published var emulators: [Emulator] = []
     @Published var bootedEmulators: [Emulator] = []
     
     init () {
-        adbPaths = fetchADBPaths()
+        DispatchQueue.global().async {
+            let result = self.fetchADBPaths()
+            DispatchQueue.main.async {
+                self.adbPaths = result
+            }
+        }
     }
     
-    func parseADBDevices(_ output: String) -> [Emulator] {
+    func fetchOfflineEmulators() {
+        let data = self.getOfflineAndroidAVDs()
+        emulators = data.map { $0.toEmulator() }
+    }
+    
+    private func parseADBDevices(_ output: String) -> [Emulator] {
         let lines = output
             .split(separator: "\n")
             .map(String.init)
@@ -35,7 +46,7 @@ final class EmulatorWatcher: ObservableObject {
         }
     }
     
-    func fetchADBPaths() -> [String] {
+    private func fetchADBPaths() -> [String] {
         let process = Process()
         let pipe = Pipe()
         process.standardOutput = pipe
@@ -133,6 +144,171 @@ final class EmulatorWatcher: ObservableObject {
             self.bootedEmulators = emulators
         }
     }
+
+    private func getOfflineAndroidAVDs() -> [OfflineEmulator] {
+        guard let avdManager = findAVDManagerPath() else { return [] }
+        let output = shell([avdManager, "list", "avd"])
+
+        var emulators: [OfflineEmulator] = []
+
+        var currentName: String?
+        var device: String?
+        var path: String?
+        var basedOn: String?
+        var tagAbi: String?
+        var skin: String?
+        var sdcard: String?
+        var snapshot: String?
+
+        func appendCurrent() {
+            if let name = currentName {
+                let api = makeApiDescription(basedOn: basedOn, tagAbi: tagAbi)
+                let emulator = OfflineEmulator(
+                    name: name,
+                    device: device ?? "Unknown",
+                    path: path ?? "",
+                    apiLevel: api,
+                    skin: skin ?? "",
+                    sdcard: sdcard ?? "",
+                    snapshot: snapshot ?? ""
+                )
+                emulators.append(emulator)
+            }
+        }
+
+        for line in output.components(separatedBy: .newlines) {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+
+            if trimmed.starts(with: "Name: ") {
+                currentName = trimmed.replacingOccurrences(of: "Name: ", with: "")
+            } else if trimmed.starts(with: "Device:") {
+                device = trimmed.replacingOccurrences(of: "Device:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "Path:") {
+                path = trimmed.replacingOccurrences(of: "Path:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "Based on:") {
+                basedOn = trimmed.replacingOccurrences(of: "Based on:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "Tag/ABI:") {
+                tagAbi = trimmed.replacingOccurrences(of: "Tag/ABI:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "Skin:") {
+                skin = trimmed.replacingOccurrences(of: "Skin:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "Sdcard:") {
+                sdcard = trimmed.replacingOccurrences(of: "Sdcard:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "Snapshot:") {
+                snapshot = trimmed.replacingOccurrences(of: "Snapshot:", with: "").trimmingCharacters(in: .whitespaces)
+            } else if trimmed.starts(with: "---------") || trimmed.isEmpty {
+                appendCurrent()
+                currentName = nil
+                device = nil
+                path = nil
+                basedOn = nil
+                tagAbi = nil
+                skin = nil
+                sdcard = nil
+                snapshot = nil
+            }
+        }
+
+        // Append the last AVD block if it wasn't followed by a separator
+        appendCurrent()
+        return emulators
+    }
+
+    private func makeApiDescription(basedOn: String?, tagAbi: String?) -> String {
+        var desc = ""
+        if let based = basedOn {
+            desc += based
+        }
+        if let tag = tagAbi {
+            if !desc.isEmpty { desc += " " }
+            desc += "(\(tag))"
+        }
+        return desc.isEmpty ? "Unknown" : desc
+    }
+    
+    private func shell(_ args: [String]) -> String {
+        let process = Process()
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = pipe
+        process.executableURL = URL(fileURLWithPath: "/bin/zsh")
+        process.arguments = ["-c", args.joined(separator: " ")]
+        do { try process.run() } catch { return "" }
+        process.waitUntilExit()
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        return String(data: data, encoding: .utf8) ?? ""
+    }
+    
+    private func findAVDManagerPath() -> String? {
+        let sdkPaths = [
+            ProcessInfo.processInfo.environment["ANDROID_SDK_ROOT"],
+            "\(NSHomeDirectory())/Library/Android/sdk",
+            "\(NSHomeDirectory())/Android/Sdk"
+        ].compactMap { $0 }
+        
+        for base in sdkPaths {
+            let path = "\(base)/cmdline-tools/latest/bin/avdmanager"
+            if FileManager.default.isExecutableFile(atPath: path) { return path }
+            if let dirs = try? FileManager.default.contentsOfDirectory(atPath: "\(base)/cmdline-tools") {
+                for dir in dirs where dir != "latest" {
+                    let candidate = "\(base)/cmdline-tools/\(dir)/bin/avdmanager"
+                    if FileManager.default.isExecutableFile(atPath: candidate) {
+                        return candidate
+                    }
+                }
+            }
+        }
+        return nil
+    }
+    
+    private func findEmulatorPath() -> String? {
+        // Check environment variables first (Android Studio usually sets this)
+        if let androidHome = ProcessInfo.processInfo.environment["ANDROID_HOME"] {
+            let path = "\(androidHome)/emulator/emulator"
+            if FileManager.default.fileExists(atPath: path) {
+                return path
+            }
+        }
+
+        if let sdkRoot = ProcessInfo.processInfo.environment["ANDROID_SDK_ROOT"] {
+            let path = "\(sdkRoot)/emulator/emulator"
+            if FileManager.default.fileExists(atPath: path) {
+                return path
+            }
+        }
+
+        // Common fallback locations
+        let fallbackPaths = [
+            "\(NSHomeDirectory())/Library/Android/sdk/emulator/emulator", // macOS default
+            "/Users/\(NSUserName())/Library/Android/sdk/emulator/emulator",
+            "/usr/local/share/android-sdk/emulator/emulator",
+            "/opt/android-sdk/emulator/emulator"
+        ]
+
+        for path in fallbackPaths where FileManager.default.fileExists(atPath: path) {
+            return path
+        }
+
+        return nil
+    }
+
+    
+    func bootEmulator(avdName: String) -> String {
+        // find emulator binary
+        guard let emulatorPath = findEmulatorPath() else { return "Emulator not found" }
+
+        // run emulator detached
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: emulatorPath)
+        process.arguments = ["-avd", avdName]
+
+        do {
+            try process.run()
+            return "Booting \(avdName)..."
+        } catch {
+            return "Failed to boot: \(error.localizedDescription)"
+        }
+    }
+
     
     func runDeeplink(url: String, adbPath: String, packageTarget: String? = nil, emulatorTarget: String? = nil) -> String {
         let process = Process()
