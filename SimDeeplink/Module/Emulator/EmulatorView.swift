@@ -2,7 +2,7 @@
 //  EmulatorView.swift
 //  SimDeeplink
 //
-//  Created by Alif Phincon on 21/10/25.
+//  Created by Alif on 21/10/25.
 //
 
 import SwiftUI
@@ -15,11 +15,48 @@ struct EmulatorView: View {
     @State private var delayTask: Task<Void, Never>? = nil
     @State private var selectedADB: String = ""
     @State private var selectedTargetEmulator: Emulator? = nil
+    @State private var isEmulatorSectionEnabled = false
     
     var onMessageChange: (String) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Emulator")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                
+                HStack {
+                    VStack {
+                        HStack {
+                            Text("Enable Emulator Section")
+                            
+                            Spacer()
+                            
+                            Toggle("", isOn: $isEmulatorSectionEnabled)
+                                .foregroundStyle(.white)
+                                .toggleStyle(.switch)
+                            
+                        }
+                        if isEmulatorSectionEnabled {
+                            Divider()
+                            EmulatorSectionView(watcher: watcher)
+                                .padding(.vertical, 4)
+                        }
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.white.opacity(0.2), lineWidth: 1)
+                        .background(Color.black.opacity(0.2))
+                        .cornerRadius(8)
+                )
+            }
+            .padding(.top, 8)
+            
             Text("Deeplink")
                 .font(.headline)
                 .foregroundColor(.white)
