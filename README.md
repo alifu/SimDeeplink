@@ -105,6 +105,9 @@ To uninstall SimDeeplink and remove its configuration files:
 |✅|**Add Timer for Deeplink Execution:** Allow users to specify a delay before running a deeplink, making it easier to wait for the simulator to be ready.|
 |✅|**Distribute via Homebrew:** Publish the app through Homebrew for easy installation. Currently, run the project from source as described above.|
 |✅|**Android Emulator Support:** Enable deeplink runs in Android Emulator for cross-platform testing.|
+|✅|**MacOS App:** Build for MacOS (Using Swift, SwiftUI).|
+|🚧|**Windows App:** Build for Windows (Using Tauri -- Rust and React).|
+|🔄|**Linux App:** Build for Linux (Using Tauri -- Rust and React).|
 
 ## ⚙️ Contributing
 Contributions and feedback are welcome! Please open an issue or submit a pull request with ideas or improvements.
