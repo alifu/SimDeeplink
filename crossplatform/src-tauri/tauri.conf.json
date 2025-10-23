@@ -10,11 +10,22 @@
     "frontendDist": "../dist"
   },
   "app": {
-    "withGlobalTauri": true,
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": false,
+        "title": "menubar",
+        "width": 600,
+        "height": 500,
+        "decorations": false,
+        "transparent": true,
+        "visible": false
+      }
+    ],
     "security": {
       "csp": null
     },
-    "windows": []
+    "macOSPrivateApi": true
   },
   "bundle": {
     "active": true,
