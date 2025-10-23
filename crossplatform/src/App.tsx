@@ -30,6 +30,10 @@ function App() {
 
   const sendMessage = async () => {
     try {
+      if (deeplink == "") {
+        setLogs("Invalid URL");
+        return;
+      }
       const response = await invoke<string>("send_deeplink", {
         adbPath: selectedAdbPath,
         packageName: packageTarget,
@@ -108,7 +112,7 @@ function App() {
             </select>
             <span>&nbsp;&nbsp;</span>
             <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 mx-20 rounded">
-              <img src="/eraser.png" width="16px" />
+              <img src="/refresh.png" width="16px" />
             </button>
           </div>
           <div className="flex" style={{ paddingTop: 12}}>
@@ -118,8 +122,10 @@ function App() {
             <span>&nbsp;&nbsp;</span>
             <input
               type="number"
+              min={1}
+              max={10}
               placeholder="in Seconds"
-              className="flex-grow p-2 rounded text-black"
+              className="p-2 rounded text-black"
             />
             <span className="flex-grow">&nbsp;&nbsp;</span>
             <button
