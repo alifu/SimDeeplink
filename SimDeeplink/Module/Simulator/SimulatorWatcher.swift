@@ -43,8 +43,7 @@ final class SimulatorWatcher: ObservableObject {
         DispatchQueue.global(qos: .background).async {
             let newList = self.getAvailableSimulators()
             DispatchQueue.main.async {
-                let iPhones = newList.filter { $0.type == .iPhone }
-                self.simulators = iPhones
+                self.simulators = newList
             }
         }
     }

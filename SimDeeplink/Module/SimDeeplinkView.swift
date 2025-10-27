@@ -52,7 +52,7 @@ struct SimDeeplinkView: View {
                             output = message
                         }
                         .blur(radius: toolChecker.isXcrunAvailable ? 0 : 3)
-                        .allowsHitTesting(!toolChecker.isXcrunAvailable)
+                        .allowsHitTesting(toolChecker.isXcrunAvailable)
                         .overlay {
                             DisabledOverlay(
                                 toolChecker: toolChecker,
@@ -72,7 +72,7 @@ struct SimDeeplinkView: View {
                             output = message
                         }
                         .blur(radius: toolChecker.isAdbAvailable ? 0 : 3)
-                        .allowsHitTesting(!toolChecker.isAdbAvailable)
+                        .allowsHitTesting(toolChecker.isAdbAvailable)
                         .overlay {
                             DisabledOverlay(
                                 toolChecker: toolChecker,
