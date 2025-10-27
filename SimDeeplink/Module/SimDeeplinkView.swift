@@ -13,6 +13,8 @@ struct SimDeeplinkView: View {
     @State private var outputEmulator = ""
     @State private var selectedTab: Int = 0
     var quitAction: () -> Void
+    @StateObject private var toolChecker = SystemToolChecker()
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         ZStack(alignment: .top) {
@@ -43,18 +45,41 @@ struct SimDeeplinkView: View {
                 .padding(0)
                 
                 TabView(selection: $selectedTab) {
-                    SimulatorView { message in
-                        outputSimulator = message
-                        output = message
+                    
+                    ZStack {
+                        SimulatorView(isActive: $toolChecker.isXcrunAvailable) { message in
+                            outputSimulator = message
+                            output = message
+                        }
+                        .blur(radius: toolChecker.isXcrunAvailable ? 0 : 3)
+                        .allowsHitTesting(!toolChecker.isXcrunAvailable)
+                        .overlay {
+                            DisabledOverlay(
+                                toolChecker: toolChecker,
+                                isVisible: !toolChecker.isXcrunAvailable,
+                                message: "xcrun is not available.\nPlease install Xcode Command Line Tools."
+                            )
+                        }
                     }
                     .tabItem {
                         Text("Apple Simulator")
                     }
                     .tag(0)
                     
-                    EmulatorView { message in
-                        outputEmulator = message
-                        output = message
+                    ZStack {
+                        EmulatorView(isActive: $toolChecker.isAdbAvailable) { message in
+                            outputEmulator = message
+                            output = message
+                        }
+                        .blur(radius: toolChecker.isAdbAvailable ? 0 : 3)
+                        .allowsHitTesting(!toolChecker.isAdbAvailable)
+                        .overlay {
+                            DisabledOverlay(
+                                toolChecker: toolChecker,
+                                isVisible: !toolChecker.isAdbAvailable,
+                                message: "ADB is not available.\nPlease install Android Platform Tools."
+                            )
+                        }
                     }
                     .tabItem {
                         Text("Android Emulator")
@@ -73,19 +98,22 @@ struct SimDeeplinkView: View {
                 ZStack {
                     ColorUtils.steelSky
                     
-                    TextEditor(text: $output)
-                        .frame(maxWidth: .infinity)
-                        .scrollContentBackground(.hidden)
-                        .background(ColorUtils.steelSky)
-                        .foregroundStyle(.white)
-                        .disabled(true)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 12)
+                    ScrollView {
+                        Text(output)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .foregroundStyle(.white)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 12)
+                    }
+                    .background(ColorUtils.steelSky)
                 }
                 .padding(0)
             }
         }
         .padding(0)
         .frame(maxWidth: .infinity)
+        .onAppear {
+            toolChecker.checkTools()
+        }
     }
 }

@@ -15,6 +15,7 @@ struct SimulatorView: View {
     @State private var delayTask: Task<Void, Never>? = nil
     @State private var selectedTargetSimulator: Simulator? = nil
     
+    @Binding var isActive: Bool
     var onMessageChange: (String) -> Void
     
     var body: some View {
