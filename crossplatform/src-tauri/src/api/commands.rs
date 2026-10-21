@@ -1,4 +1,4 @@
-use tauri::State;
+use tauri::{AppHandle, State};
 
 use crate::device::model::{Device, Platform};
 
@@ -52,4 +52,9 @@ pub async fn open_deeplink(
         backend.open_deeplink(platform, &url, target.as_deref(), package.as_deref(), adb_path.as_deref().unwrap_or_default())
     })
     .await
+}
+
+#[tauri::command]
+pub fn quit_app(app_handle: AppHandle) {
+    app_handle.exit(0);
 }
