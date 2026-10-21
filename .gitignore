@@ -36,3 +36,9 @@ fastlane/test_output
 *.ipa
 *.dSYM
 *.dSYM.zip
+
+# Claude Code
+.claude/
+
+# Graphify
+graphify-out/
