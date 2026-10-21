@@ -132,11 +132,13 @@ jobs:
         run: |
           set -eux
           apt-get update
+          name="$(dpkg-deb -f ./*.deb Package)"
+          echo "package name: $name"
           apt-get install -y ./*.deb
-          bin="$(dpkg -L simdeeplink | grep '/usr/bin/' | head -n 1)"
+          bin="$(dpkg -L "$name" | grep '/usr/bin/' | head -n 1)"
           test -x "$bin"
           if ldd "$bin" | grep "not found"; then exit 1; fi
-          apt-get remove -y simdeeplink
+          apt-get remove -y "$name"
           test ! -e "$bin"
 
   install-rpm:
@@ -155,9 +157,11 @@ jobs:
       - name: Install, check the libraries, remove
         run: |
           set -eux
+          name="$(rpm -qp --qf '%{NAME}' ./*.rpm)"
+          echo "package name: $name"
           dnf install -y ./*.rpm
-          bin="$(rpm -ql simdeeplink | grep '/usr/bin/' | head -n 1)"
+          bin="$(rpm -ql "$name" | grep '/usr/bin/' | head -n 1)"
           test -x "$bin"
           if ldd "$bin" | grep "not found"; then exit 1; fi
-          dnf remove -y simdeeplink
+          dnf remove -y "$name"
           test ! -e "$bin"
