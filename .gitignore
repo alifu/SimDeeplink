@@ -42,3 +42,15 @@ fastlane/test_output
 
 # Graphify
 graphify-out/
+
+# Tauri app (Node + Rust)
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.log
+src-tauri/target/
+src-tauri/gen/schemas/
+.idea/
+.vscode/*
+!.vscode/extensions.json

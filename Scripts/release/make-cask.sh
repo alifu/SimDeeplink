@@ -31,8 +31,11 @@ cask "simdeeplink" do
   uninstall quit: "com.alifu.SimDeeplink"
 
   zap trash: [
+    "~/Library/Application Support/com.alifu.SimDeeplink",
+    "~/Library/Caches/com.alifu.SimDeeplink",
     "~/Library/Preferences/com.alifu.SimDeeplink.plist",
     "~/Library/Saved Application State/com.alifu.SimDeeplink.savedState",
+    "~/Library/WebKit/com.alifu.SimDeeplink",
   ]
 end
 RUBY
