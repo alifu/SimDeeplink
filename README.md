@@ -132,6 +132,18 @@ Contributions and feedback are welcome! Please open an issue or submit a pull re
 3. Select the appropriate target and scheme (usually 'SimDeeplink' or similar).
 4. Build and run (⌘R). The app should appear in your menu bar.
 
+### 🧪 Running the tests
+
+```bash
+# unit tests (Swift Testing, no simulator needed)
+xcodebuild -project SimDeeplink.xcodeproj -scheme SimDeeplink -destination 'platform=macOS' -only-testing:SimDeeplinkTests test
+
+# UI tests (run the real window with canned devices, `-UITest`)
+xcodebuild -project SimDeeplink.xcodeproj -scheme SimDeeplink -destination 'platform=macOS' test
+```
+
+Maintainers: see [`RELEASING.md`](./RELEASING.md) for how a release and the Homebrew cask are published.
+
 ## 🪪 License
 MIT License. See [`LICENSE`](./LICENSE) for details.
 
