@@ -35,7 +35,8 @@ jobs:
             CODE_SIGN_IDENTITY=- ONLY_ACTIVE_ARCH=NO build
       - name: The shipped app must not be sandboxed (it runs xcrun and adb)
         run: |
-          if codesign -d --entitlements - build/Build/Products/Release/SimDeeplink.app 2>&1 | grep -q "app-sandbox"; then
+          # The key may be present and set to false; only "true" means sandboxed.
+          if codesign -d --entitlements - build/Build/Products/Release/SimDeeplink.app 2>&1 | grep -A2 "app-sandbox" | grep -q "\[Bool\] true"; then
             echo "Release build is sandboxed" >&2
             exit 1
           fi
