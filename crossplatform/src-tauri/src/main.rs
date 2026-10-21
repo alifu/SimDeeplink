@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod emulator;
+use simdeeplink_lib::api;
 mod platform;
 
 fn main() {
@@ -11,11 +11,16 @@ fn main() {
     let builder = builder.plugin(platform::plugin());
 
     builder
+        .manage(api::service::Backend::system())
         .invoke_handler(tauri::generate_handler![
             platform::init,
             platform::show_menubar_panel,
-            emulator::send_deeplink,
-            emulator::fetch_adb_paths
+            api::platforms,
+            api::tool_status,
+            api::adb_paths,
+            api::list_devices,
+            api::boot_device,
+            api::open_deeplink
         ])
         .setup(|app| {
             platform::setup(app)?;
