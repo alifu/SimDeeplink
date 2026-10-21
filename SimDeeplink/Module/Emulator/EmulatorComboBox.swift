@@ -9,27 +9,30 @@ import AppKit
 import SwiftUI
 
 struct Emulator: Identifiable, Equatable {
-    let id = UUID()
-    let name: String   // Emulator name or device ID
-    let serial: String // e.g. emulator-5554
+    let name: String   // AVD name
+    let serial: String // e.g. emulator-5554, empty while the emulator is stopped
     let isOnline: Bool
-}
 
-struct OfflineEmulator: Identifiable, Equatable {
-    let id = UUID()
-    let name: String
-    let device: String
-    let path: String
-    let apiLevel: String
-    let skin: String
-    let sdcard: String
-    let snapshot: String
-    
-    func toEmulator() -> Emulator {
-        Emulator(
-            name: self.name,
-            serial: "",
-            isOnline: false
+    /// Stable across refreshes, so a selection survives the list being re-read.
+    var id: String { serial.isEmpty ? "avd:\(name)" : serial }
+
+    var title: String {
+        let status = isOnline ? "🟢" : "⚪️"
+        return serial.isEmpty ? "\(status) \(name)" : "\(status) \(name) (\(serial))"
+    }
+
+    init(name: String, serial: String, isOnline: Bool) {
+        self.name = name
+        self.serial = serial
+        self.isOnline = isOnline
+    }
+
+    /// An Android entry from `AdbService`: its udid is the adb serial, or `avd:<name>` while stopped.
+    init(_ device: Simulator) {
+        self.init(
+            name: device.name,
+            serial: device.udid.hasPrefix(AdbService.avdPrefix) ? "" : device.udid,
+            isOnline: device.isBooted
         )
     }
 }
@@ -56,7 +59,7 @@ struct AndroidEmulatorComboBox: NSViewRepresentable {
         
         // restore selected item
         if let selected = selectedEmulator,
-           let index = items.firstIndex(where: { $0.serial == selected.serial }) {
+           let index = items.firstIndex(where: { $0.id == selected.id }) {
             nsView.selectItem(at: index)
         }
     }
@@ -82,8 +85,7 @@ struct AndroidEmulatorComboBox: NSViewRepresentable {
         func comboBox(_ comboBox: NSComboBox, objectValueForItemAt index: Int) -> Any? {
             guard index >= 0 && index < filteredItems.count else { return nil }
             let emulator = filteredItems[index]
-            let status = emulator.isOnline ? "🟢" : "⚪️"
-            return "\(status) \(emulator.name) (\(emulator.serial))"
+            return emulator.title
         }
         
         // MARK: - Delegate

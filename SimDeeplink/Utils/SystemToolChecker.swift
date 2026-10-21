@@ -18,9 +18,18 @@ final class SystemToolChecker: ObservableObject {
     
     /// Check tools asynchronously
     func checkTools() {
+        #if DEBUG
+        if UITestSupport.isActive {
+            isXcrunAvailable = true
+            isAdbAvailable = true
+            return
+        }
+        #endif
         Task.detached {
             let xcrun = await Self.findCommandPath("xcrun")
-            let adb = await Self.findCommandPath("adb")
+            // Same lookup the Android runner uses, so the tab is never locked while adb would have been found.
+            let knownAdb = AdbService().adbPath
+            let adb = knownAdb != nil ? knownAdb : await Self.findCommandPath("adb")
             
             await MainActor.run {
                 self.xcrunPath = xcrun

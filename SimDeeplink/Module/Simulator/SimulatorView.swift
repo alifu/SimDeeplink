@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SimulatorView: View {
-    @StateObject private var watcher = SimulatorWatcher()
+    @StateObject private var watcher = SimulatorWatcher.makeDefault()
     @State private var isSimulatorSectionEnabled = false
     @State private var deeplinkURL: String = ""
     @State private var deeplinkDelay: Double = 0
@@ -35,6 +35,7 @@ struct SimulatorView: View {
                             Spacer()
                             
                             Toggle("", isOn: $isSimulatorSectionEnabled)
+                                .accessibilityIdentifier("simulatorToggle")
                                 .foregroundStyle(.white)
                                 .toggleStyle(.switch)
                             
@@ -69,6 +70,7 @@ struct SimulatorView: View {
                         HStack {
                             TextField("Enter Deeplink URL", text: $deeplinkURL)
                                 .foregroundStyle(.white)
+                                .accessibilityIdentifier("simulatorDeeplinkField")
                             
                             Button(action: {
                                 deeplinkURL = ""
@@ -77,6 +79,7 @@ struct SimulatorView: View {
                                 Image(systemName: "eraser.fill")
                                     .foregroundStyle(.white)
                             }
+                            .accessibilityIdentifier("simulatorResetButton")
                         }
                         .padding(.top, 4)
                         
@@ -117,7 +120,7 @@ struct SimulatorView: View {
                                 delayTask?.cancel()
                                 onMessageChange("Loading...")
                                 
-                                guard deeplinkURL.isLink else {
+                                guard deeplinkURL.trimmingCharacters(in: .whitespacesAndNewlines).isLink else {
                                     onMessageChange("Invalid Deeplink URL")
                                     return
                                 }
@@ -143,12 +146,10 @@ struct SimulatorView: View {
                                         onMessageChange("Running deeplink...")
                                     }
                                     
-                                    let result: String
-                                    if let selectedTargetSimulator {
-                                        result = watcher.runDeeplink(url: deeplinkURL, target: selectedTargetSimulator.udid)
-                                    } else {
-                                        result = watcher.runDeeplink(url: deeplinkURL)
-                                    }
+                                    let result = await watcher.runDeeplink(
+                                        url: deeplinkURL.trimmingCharacters(in: .whitespacesAndNewlines),
+                                        target: selectedTargetSimulator?.udid ?? "booted"
+                                    )
                                     
                                     await MainActor.run {
                                         onMessageChange(result)
@@ -158,6 +159,7 @@ struct SimulatorView: View {
                                 Text("Execute Deeplink")
                                     .foregroundStyle(.white)
                             }
+                            .accessibilityIdentifier("simulatorExecuteButton")
                             .buttonStyle(.borderedProminent)
                         }
                         .padding(.top, 8)
@@ -175,6 +177,9 @@ struct SimulatorView: View {
             .padding(.top, 8)
             .padding(.bottom, 8)
             .padding(.horizontal, 8)
+        }
+        .onChange(of: watcher.bootedSimulators) { _, list in
+            selectedTargetSimulator = list.first { $0.id == selectedTargetSimulator?.id }
         }
     }
 }

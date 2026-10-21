@@ -18,6 +18,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var statusBarItem: NSStatusItem?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
+        #if DEBUG
+        if UITestSupport.isActive {
+            showWindowForUITesting()
+            return
+        }
+        #endif
+        
         if statusBarItem == nil {
             statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         }
@@ -39,6 +46,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
     }
+    
+    #if DEBUG
+    /// UI tests cannot click the menu bar item, so the window is shown directly.
+    private func showWindowForUITesting() {
+        NSApp.setActivationPolicy(.regular)
+        window = getOrBuildWindow(size: NSRect(x: 200, y: 200, width: 600, height: 500))
+        window?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+    #endif
     
     func applicationWillTerminate(_ notification: Notification) {
         if statusBarItem != nil {

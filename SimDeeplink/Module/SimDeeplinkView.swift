@@ -37,6 +37,7 @@ struct SimDeeplinkView: View {
                                 Text("Exit")
                                     .foregroundStyle(.white)
                             }
+                            .accessibilityIdentifier("exitButton")
                         }
                         .padding(.horizontal)
                     }
@@ -104,6 +105,7 @@ struct SimDeeplinkView: View {
                             .foregroundStyle(.white)
                             .padding(.vertical, 8)
                             .padding(.horizontal, 12)
+                            .accessibilityIdentifier("outputText")
                     }
                     .background(ColorUtils.steelSky)
                 }

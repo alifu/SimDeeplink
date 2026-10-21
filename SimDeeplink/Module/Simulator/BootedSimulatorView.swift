@@ -21,5 +21,6 @@ struct BootedSimulatorView: View {
             ),
             items: $watcher.bootedSimulators
         )
+        .accessibilityIdentifier("simulatorTargetComboBox")
     }
 }

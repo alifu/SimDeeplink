@@ -32,18 +32,22 @@ struct EmulatorSectionView: View {
                 ),
                 items: $watcher.emulators
             )
+            .accessibilityIdentifier("emulatorComboBox")
             
             Button(action: {
-                DispatchQueue.global().async {
-                    if let name = selectedEmulator?.name {
-                        _ = watcher.bootEmulator(avdName: name)
-                    }
+                guard let name = selectedEmulator?.name else { return }
+                Task {
+                    _ = await watcher.bootEmulator(avdName: name)
+                    watcher.fetchOfflineEmulators()
                 }
             }) {
                 Image(systemName: "play.fill")
                     .foregroundStyle(.green)
             }
-            .disabled(selectedEmulator == nil)
+            .disabled(selectedEmulator == nil || selectedEmulator?.isOnline == true)
+        }
+        .onAppear {
+            watcher.fetchOfflineEmulators()
         }
     }
 }

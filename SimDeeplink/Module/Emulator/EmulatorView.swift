@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EmulatorView: View {
-    @StateObject private var watcher = EmulatorWatcher()
+    @StateObject private var watcher = EmulatorWatcher.makeDefault()
     @State private var deeplinkURL: String = ""
     @State private var packageTarget: String = ""
     @State private var deeplinkDelay: Double = 0
@@ -20,6 +20,10 @@ struct EmulatorView: View {
     @Binding var isActive: Bool
     var onMessageChange: (String) -> Void
     
+    private var trimmedPackage: String {
+        packageTarget.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     var body: some View {
         VStack(alignment: .leading) {
             
@@ -36,6 +40,7 @@ struct EmulatorView: View {
                             Spacer()
                             
                             Toggle("", isOn: $isEmulatorSectionEnabled)
+                                .accessibilityIdentifier("emulatorToggle")
                                 .foregroundStyle(.white)
                                 .toggleStyle(.switch)
                             
@@ -69,6 +74,7 @@ struct EmulatorView: View {
                         HStack {
                             TextField("Enter Deeplink URL", text: $deeplinkURL)
                                 .foregroundStyle(.white)
+                                .accessibilityIdentifier("emulatorDeeplinkField")
                             
                             Button(action: {
                                 deeplinkURL = ""
@@ -77,6 +83,7 @@ struct EmulatorView: View {
                                 Image(systemName: "eraser.fill")
                                     .foregroundStyle(.white)
                             }
+                            .accessibilityIdentifier("emulatorResetButton")
                         }
                         .padding(.top, 4)
                         
@@ -145,7 +152,7 @@ struct EmulatorView: View {
                                 delayTask?.cancel()
                                 onMessageChange("Loading...")
                                 
-                                guard deeplinkURL.isLink else {
+                                guard deeplinkURL.trimmingCharacters(in: .whitespacesAndNewlines).isLink else {
                                     onMessageChange("Invalid Deeplink URL")
                                     return
                                 }
@@ -171,21 +178,12 @@ struct EmulatorView: View {
                                         onMessageChange("Running deeplink...")
                                     }
                                     
-                                    var result: String
-                                    if let serial = selectedTargetEmulator?.serial {
-                                        result = watcher.runDeeplink(
-                                            url: deeplinkURL,
-                                            adbPath: selectedADB,
-                                            packageTarget: packageTarget.isEmpty ? nil : packageTarget,
-                                            emulatorTarget: serial
-                                        )
-                                    } else {
-                                        result = watcher.runDeeplink(
-                                            url: deeplinkURL,
-                                            adbPath: selectedADB,
-                                            packageTarget: packageTarget.isEmpty ? nil : packageTarget
-                                        )
-                                    }
+                                    let result = await watcher.runDeeplink(
+                                        url: deeplinkURL.trimmingCharacters(in: .whitespacesAndNewlines),
+                                        adbPath: selectedADB,
+                                        packageTarget: trimmedPackage.isEmpty ? nil : trimmedPackage,
+                                        emulatorTarget: selectedTargetEmulator?.serial
+                                    )
                                     
                                     await MainActor.run {
                                         onMessageChange(result)
@@ -195,6 +193,7 @@ struct EmulatorView: View {
                                 Text("Execute Deeplink")
                                     .foregroundStyle(.white)
                             }
+                            .accessibilityIdentifier("emulatorExecuteButton")
                             .buttonStyle(.borderedProminent)
                             .disabled(selectedADB.isEmpty)
                         }
@@ -213,6 +212,15 @@ struct EmulatorView: View {
             .padding(.top, 8)
             .padding(.bottom, 8)
             .padding(.horizontal, 8)
+        }
+        .onChange(of: watcher.adbPaths) { _, paths in
+            if selectedADB.isEmpty { selectedADB = paths.first ?? "" }
+        }
+        .onChange(of: watcher.bootedEmulators) { _, list in
+            selectedTargetEmulator = list.first { $0.id == selectedTargetEmulator?.id }
+        }
+        .onChange(of: selectedADB) { _, path in
+            watcher.selectedAdbPath = path
         }
     }
 }

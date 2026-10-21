@@ -8,19 +8,6 @@
 import SwiftUI
 import AppKit
 
-enum SimulatorType: String, CaseIterable {
-    case iPhone, iPad, watch, tv, unknown
-}
-
-struct Simulator: Identifiable, Equatable {
-    let id = UUID()
-    let name: String
-    let udid: String
-    let runtime: String
-    let isBooted: Bool
-    let type: SimulatorType
-}
-
 struct SimulatorComboBox: NSViewRepresentable {
     @Binding var selectedSimulator: Simulator?
     @Binding var items: [Simulator]
