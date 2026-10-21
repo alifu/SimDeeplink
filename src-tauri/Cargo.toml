@@ -1,6 +1,6 @@
 [package]
 name = "simdeeplink"
-version = "0.0.6"
+version = "0.0.7"
 description = "Run deeplinks on iOS simulators and Android emulators"
 authors = ["alifu"]
 edition = "2021"

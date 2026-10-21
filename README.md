@@ -8,7 +8,7 @@
 [![Tauri](https://img.shields.io/badge/Tauri-2-orange.svg)](https://tauri.app)
 [![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-blue.svg)](https://github.com/alifu/SimDeeplink/releases)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
-[![Version](https://img.shields.io/badge/Version-0.0.6-yellow.svg)](https://github.com/alifu/SimDeeplink/releases)
+[![Version](https://img.shields.io/badge/Version-0.0.7-yellow.svg)](https://github.com/alifu/SimDeeplink/releases)
 [![Homebrew Tap](https://img.shields.io/badge/Homebrew-alifu%2Ftap-blue.svg)](https://github.com/alifu/homebrew-tap)
 
 
