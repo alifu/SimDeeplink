@@ -2,6 +2,10 @@
   <img src="./doc/main-icon.png" alt="icon" width="128"/>
 </p>
 
+> **This is the `legacy` branch: the original Swift/SwiftUI macOS app (up to 0.0.6).** SimDeeplink is now one Tauri app
+> for macOS, Windows and Linux on [`main`](https://github.com/alifu/SimDeeplink). This branch is kept for reference and
+> hotfixes only; Homebrew installs the new app.
+
 # SimDeeplink (Menu Bar)
 
 
