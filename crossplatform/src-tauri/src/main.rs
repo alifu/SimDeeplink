@@ -26,7 +26,8 @@ fn main() {
             api::adb_paths,
             api::list_devices,
             api::boot_device,
-            api::open_deeplink
+            api::open_deeplink,
+            api::quit_app
         ])
         .setup(|app| {
             platform::setup(app)?;

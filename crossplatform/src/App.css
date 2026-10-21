@@ -1,58 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
+@theme {
+  --color-surface: #234c6a;
+  --color-panel: #1b3c53;
+  --color-field: #456882;
+  --color-ink: #ffffff;
+  --color-danger: #ff8a80;
+  --color-good: #8be9a8;
+}
 
+html, body, #root {
   height: 100%;
-  width: 100%;
   margin: 0;
-  padding: 0;
+}
 
-  color: #ffffff;
-  background-color: #234C6A;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+body {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  color: var(--color-ink);
+  background-color: var(--color-surface);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.box { 
-  background-color: #1B3C53; 
-  border-radius: 10px; 
-  padding-inline: 12px;
-  padding-block: 18px;
-}
-
-input, select {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding:  0.2em;
-  font-size: 1em;
-  font-weight: 100;
-  font-family: inherit;
-  color: #ffffff;
-  background-color: #234C6A;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(255, 255, 255, 0.2);
-}
-
-button {
-  border-radius: 8px;
-}
-
-textarea {
-  color: #ffffff;
-  background-color: #456882;
-  border: 0px solid transparent;
 }

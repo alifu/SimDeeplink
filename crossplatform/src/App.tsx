@@ -1,152 +1,55 @@
 import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 
 import "./App.css";
+import { PLATFORM_LABELS, PlatformTabs } from "./components/PlatformTabs";
+import { PlatformPanel } from "./components/PlatformPanel";
+import { api, errorMessage } from "./lib/api";
+import type { Platform } from "./lib/types";
 
 function App() {
-
+  const [platforms, setPlatforms] = useState<Platform[]>([]);
+  const [active, setActive] = useState<Platform | null>(null);
   const [adbPaths, setAdbPaths] = useState<string[]>([]);
-  const [selectedAdbPath, setSelectedAdbPath] = useState("");
-  const [deeplink, setDeeplink] = useState("");
-  const [packageTarget, setPackageTarget] = useState("");
-  const [logs, setLogs] = useState("");
+  const [adbPathsReady, setAdbPathsReady] = useState(false);
+  const [fatal, setFatal] = useState<string | null>(null);
 
-  // Load ADB paths from Rust on startup
   useEffect(() => {
-    invoke("init");
-    async function loadADBPaths() {
+    void (async () => {
       try {
-        const paths = await invoke<string[]>("fetch_adb_paths");
-        setAdbPaths(paths);
-        if (paths.length > 0) setSelectedAdbPath(paths[0]);
-        console.error(adbPaths);
-      } catch (err) {
-        console.error("Failed to fetch ADB paths:", err);
+        // macOS turns the window into a menubar panel here; other systems ignore the call.
+        await api.init();
+        const available = await api.platforms();
+        setPlatforms(available);
+        setActive(available[0] ?? null);
+        setAdbPaths(await api.adbPaths());
+      } catch (e) {
+        setFatal(errorMessage(e));
+      } finally {
+        setAdbPathsReady(true);
       }
-    }
-
-    loadADBPaths();
+    })();
   }, []);
 
-  const sendMessage = async () => {
-    try {
-      if (deeplink == "") {
-        setLogs("Invalid URL");
-        return;
-      }
-      const response = await invoke<string>("send_deeplink", {
-        adbPath: selectedAdbPath,
-        packageName: packageTarget,
-        deeplink: deeplink,
-      });
-      console.log("Response from Rust:", response);
-      setLogs(() => response);
-    } catch (error) {
-      console.error("Error invoking command:", error);
-      setLogs(() => "\nError: " + String(error));
-    }
-  };
-
   return (
-    <div className="flex flex-col h-screen bg-slate-700 text-white h-full p-4">
-      <h2 className="text-xl font-bold mb-80 text-center bg-[#1B3C53]">SimDeeplink</h2>
-      <div className="p-4 bg-slate-600 rounded-xl">
-        Deeplink
-        <div className="flex flex-col box" style={{ paddingBottom: 12 }}>
-          <div className="flex">
-            <input
-              type="text"
-              value={deeplink}
-              onChange={(e) => setDeeplink(e.target.value)}
-              placeholder="Enter Deeplink URL"
-              className="flex-grow p-2 rounded text-black"
-            />
-            <span>&nbsp;&nbsp;</span>
-            <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 mx-20 rounded">
-              <img src="/eraser.png" width="16px" />
-            </button>
-          </div>
-          <div className="flex" style={{ paddingTop: 12}}>
-            <span>
-              ADB Executeable
-            </span>
-            <span>&nbsp;&nbsp;</span>
-            <select
-              value={selectedAdbPath}
-              onChange={(e) => setSelectedAdbPath(e.target.value)}
-              className="flex-grow p-2 rounded text-black"
-            >
-              {adbPaths.length === 0 ? (
-                <option>Loading...</option>
-              ) : (
-                adbPaths.map((path, idx) => (
-                  <option key={idx} value={path}>
-                    {path}
-                  </option>
-                ))
-              )}
-            </select>
-          </div>
-          <div className="flex" style={{ paddingTop: 12}}>
-            <span>Package Target (Optional)</span>
-            <span>&nbsp;&nbsp;</span>
-            <input
-              type="text"
-              value={packageTarget}
-              onChange={(e) => setPackageTarget(e.target.value)}
-              placeholder="Package"
-              className="flex-grow p-2 rounded text-black"
-            />
-            <span>&nbsp;&nbsp;</span>
-            <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 mx-20 rounded">
-              <img src="/eraser.png" width="16px" />
-            </button>
-          </div>
-          <div className="flex" style={{ paddingTop: 12}}>
-            <span>
-              Emulator Target
-            </span>
-            <span>&nbsp;&nbsp;</span>
-            <select className="flex-grow p-2 rounded text-black">
-              <option>Pilih</option>
-            </select>
-            <span>&nbsp;&nbsp;</span>
-            <button className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 mx-20 rounded">
-              <img src="/refresh.png" width="16px" />
-            </button>
-          </div>
-          <div className="flex" style={{ paddingTop: 12}}>
-            <span>
-              Delay
-            </span>
-            <span>&nbsp;&nbsp;</span>
-            <input
-              type="number"
-              min={1}
-              max={10}
-              placeholder="in Seconds"
-              className="p-2 rounded text-black"
-            />
-            <span className="flex-grow">&nbsp;&nbsp;</span>
-            <button
-            className="flex-none bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 mx-20 rounded"
-            onClick={sendMessage}
-            >
-              Execute Deeplink
-            </button>
-          </div>
-        </div>
-      </div>
-      <span style={{ paddingTop: 12 }}></span>
-      <textarea
-        value={logs}
-        readOnly
-        placeholder="Logs or text area..."
-        className="flex-grow p-2 resize-none" // need to show output of send_deeplink in here
-      />
-    </div>
+    <main className="flex h-full flex-col gap-2 p-3">
+      <header className="flex items-center gap-2">
+        <h1 className="flex-1 text-lg font-bold">
+          SimDeeplink
+          {platforms.length === 1 && <span className="ml-2 text-sm font-normal opacity-70">{PLATFORM_LABELS[platforms[0]]}</span>}
+        </h1>
+        <button
+          aria-label="Quit SimDeeplink"
+          className="rounded-lg bg-panel px-3 py-1 text-sm hover:bg-field"
+          onClick={() => void api.quit()}
+        >
+          Quit
+        </button>
+      </header>
+      <PlatformTabs platforms={platforms} active={active ?? "android"} onChange={setActive} />
+      {fatal && <p role="alert" className="text-danger">{fatal}</p>}
+      {active && <PlatformPanel key={active} platform={active} adbPaths={adbPaths} adbPathsReady={adbPathsReady} />}
+    </main>
   );
 }
-
 
 export default App;
