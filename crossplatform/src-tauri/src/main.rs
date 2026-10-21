@@ -10,6 +10,12 @@ fn main() {
     #[cfg(target_os = "macos")]
     let builder = builder.plugin(platform::plugin());
 
+    #[cfg(not(target_os = "macos"))]
+    let builder = builder
+        .plugin(tauri_plugin_positioner::init())
+        // A second launch brings the first one forward instead of starting another tray icon.
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| platform::reveal(app)));
+
     builder
         .manage(api::service::Backend::system())
         .invoke_handler(tauri::generate_handler![
