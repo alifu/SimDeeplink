@@ -5,14 +5,14 @@ use tauri::{
 };
 use tauri_nspanel::ManagerExt;
 use image::GenericImageView;
-use std::{fs, process::Command};
 
-use crate::fns::position_menubar_panel;
+const TRAY_ICON: &[u8] = include_bytes!("../../../icons/tray-icon.png");
+
+use super::fns::position_menubar_panel;
 
 pub fn create(app_handle: &AppHandle) -> tauri::Result<TrayIcon> {
-    // Load icon (PNG -> RGBA)
-    let icon_bytes = fs::read("icons/tray-icon.png").expect("Tray icon not found");
-    let dyn_img = image::load_from_memory(&icon_bytes).expect("Failed to decode image");
+    // Embedded in the binary: a bundled app has no "icons/" folder next to its working directory.
+    let dyn_img = image::load_from_memory(TRAY_ICON).expect("Failed to decode image");
     let rgba = dyn_img.to_rgba8();
     let (width, height) = dyn_img.dimensions();
     let tray_icon = Image::new_owned(rgba.into_raw(), width, height);

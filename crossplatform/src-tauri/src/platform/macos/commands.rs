@@ -2,7 +2,7 @@ use std::sync::Once;
 
 use tauri_nspanel::ManagerExt;
 
-use crate::fns::{
+use super::fns::{
     setup_menubar_panel_listeners, swizzle_to_menubar_panel, update_menubar_appearance,
 };
 
