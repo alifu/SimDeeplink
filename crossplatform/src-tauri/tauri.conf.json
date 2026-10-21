@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "SimDeeplink",
-  "version": "0.0.5",
-  "identifier": "appwork.simdeeplink",
+  "version": "0.0.6",
+  "identifier": "com.alifu.SimDeeplink",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -14,7 +14,7 @@
       {
         "fullscreen": false,
         "resizable": false,
-        "title": "menubar",
+        "title": "SimDeeplink",
         "width": 600,
         "height": 500,
         "decorations": false,
@@ -29,7 +29,13 @@
   },
   "bundle": {
     "active": true,
-    "targets": ["app"],
+    "targets": [
+      "app",
+      "nsis",
+      "msi",
+      "deb",
+      "rpm"
+    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -38,6 +44,36 @@
       "icons/icon.ico"
     ],
     "category": "public.app-category.developer-tools",
-    "longDescription": "SimDeeplink tray utility for sending Android emulator deeplinks from your desktop."
+    "longDescription": "SimDeeplink is a tray app that opens deeplinks on iOS simulators (macOS) and Android emulators (macOS, Windows, Linux).",
+    "shortDescription": "Run deeplinks on iOS simulators and Android emulators",
+    "publisher": "alifu",
+    "homepage": "https://github.com/alifu/SimDeeplink",
+    "license": "MIT",
+    "licenseFile": "../../LICENSE",
+    "macOS": {
+      "minimumSystemVersion": "14.0",
+      "signingIdentity": "-"
+    },
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    },
+    "linux": {
+      "deb": {
+        "depends": [
+          "libwebkit2gtk-4.1-0",
+          "libgtk-3-0",
+          "libayatana-appindicator3-1"
+        ]
+      },
+      "rpm": {
+        "depends": [
+          "webkit2gtk4.1",
+          "gtk3",
+          "libayatana-appindicator-gtk3"
+        ]
+      }
+    }
   }
 }

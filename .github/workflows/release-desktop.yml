@@ -1,0 +1,45 @@
+name: Release desktop
+
+# Adds the Windows and Linux installers to the release that the Release workflow creates for the same tag.
+# macOS is packed too (to prove it builds) but stays unpublished until the Tauri app replaces the Swift one.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  version:
+    name: Tag and app agree
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sh Scripts/release/check-version.sh "${GITHUB_REF_NAME#v}"
+
+  package:
+    needs: version
+    uses: ./.github/workflows/package-desktop.yml
+
+  publish:
+    name: Attach installers to the release
+    needs: package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: desktop-*
+          path: assets
+      - name: Wait for the release, then upload
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -eu
+          # The Release workflow creates the release; two workflows must not both try to.
+          for attempt in $(seq 1 60); do
+            gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 && break
+            echo "waiting for release $GITHUB_REF_NAME ($attempt)"; sleep 30
+          done
+          gh release view "$GITHUB_REF_NAME" >/dev/null
+          gh release upload "$GITHUB_REF_NAME" --clobber assets/desktop-windows/* assets/desktop-linux/*
