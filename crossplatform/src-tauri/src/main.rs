@@ -1,29 +1,24 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod command;
-mod fns;
-mod tray;
 mod emulator;
-
-use tauri::Manager;
+mod platform;
 
 fn main() {
-    tauri::Builder::default()
+    let builder = tauri::Builder::default();
+
+    #[cfg(target_os = "macos")]
+    let builder = builder.plugin(platform::plugin());
+
+    builder
         .invoke_handler(tauri::generate_handler![
-            command::init,
-            command::show_menubar_panel,
+            platform::init,
+            platform::show_menubar_panel,
             emulator::send_deeplink,
             emulator::fetch_adb_paths
         ])
-        .plugin(tauri_nspanel::init())
         .setup(|app| {
-            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
-
-            let app_handle = app.app_handle();
-
-            tray::create(app_handle)?;
-
+            platform::setup(app)?;
             Ok(())
         })
         .run(tauri::generate_context!())
