@@ -49,7 +49,6 @@
     "publisher": "alifu",
     "homepage": "https://github.com/alifu/SimDeeplink",
     "license": "MIT",
-    "licenseFile": "../../LICENSE",
     "macOS": {
       "minimumSystemVersion": "14.0",
       "signingIdentity": "-"
