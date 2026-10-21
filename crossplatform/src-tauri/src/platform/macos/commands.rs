@@ -25,3 +25,10 @@ pub fn show_menubar_panel(app_handle: tauri::AppHandle) {
 
     panel.show();
 }
+
+/// Shows the panel if it exists yet (it is created when the page first calls `init`).
+pub fn reveal(app_handle: &tauri::AppHandle) {
+    if let Ok(panel) = app_handle.get_webview_panel("main") {
+        panel.show();
+    }
+}

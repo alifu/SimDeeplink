@@ -1,4 +1,6 @@
-//! Everything that depends on the host OS. Each OS exposes the same names: `init`, `show_menubar_panel`, `setup`.
+//! Everything that depends on the host OS. Each OS exposes the same names: `init`, `show_menubar_panel`, `setup`, `reveal`.
+
+mod toggle_guard;
 
 #[cfg(target_os = "macos")]
 mod macos;

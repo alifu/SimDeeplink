@@ -37,3 +37,8 @@ cocoa = "0.25"
 objc = "0.2"
 tauri-nspanel = { git = "https://github.com/ahkohd/tauri-nspanel", branch = "v2" }
 monitor = { git = "https://github.com/ahkohd/tauri-toolkit", branch = "v2" }
+
+# Windows and Linux: place the popup at the tray icon, and keep a second launch from opening a second app.
+[target.'cfg(not(target_os = "macos"))'.dependencies]
+tauri-plugin-positioner = { version = "2", features = ["tray-icon"] }
+tauri-plugin-single-instance = "2"
