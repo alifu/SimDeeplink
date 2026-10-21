@@ -29,66 +29,53 @@ SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and 
 - **Menu Bar Access:** Launch and use the app from your menu bar on any Mac desktop, for maximum convenience.
 - **Simulator Booting:** The app can automatically boot the Simulator if it’s not running, so you can execute deeplinks immediately.
 
-## 🧭 Installation
+## 🧭 Install
 
-### 🪄 Using Homebrew (Recommended)
+With [Homebrew](https://brew.sh) (no Xcode needed; this installs the prebuilt app):
 
-You can install `SimDeeplink` directly via `Homebrew`:
+```bash
+brew install --cask alifu/tap/simdeeplink
+```
 
-  ```bash
-  brew install --cask alifu/tap/simdeeplink
-  ```
+Open it from Launchpad, Spotlight or `open -a SimDeeplink`; the icon appears in the menu bar.
 
-Once installed, you can open it from Launchpad or via:
+### Update and uninstall
 
-  ```bash
-  open -a SimDeeplink
-  ```
+```bash
+brew update && brew upgrade --cask simdeeplink
+brew uninstall --cask simdeeplink          # add --zap to also remove its settings
+```
 
-💡 Tip: For clean update, please run below command:
+Or download `SimDeeplink.zip` from the [latest release](https://github.com/alifu/SimDeeplink/releases/latest), unzip it and
+drag `SimDeeplink.app` into `/Applications`. To update that way, quit the app and replace it with the new one; to remove
+it, quit it and move it to the Trash.
 
-  ```bash
-  // first uninstall the app
-  brew uninstall --cask alifu/tap/simdeeplink
+### "SimDeeplink can't be opened" warning
 
-  // then install again
-  brew install --cask alifu/tap/simdeeplink 
-  ```
+SimDeeplink isn't notarized by Apple (that needs a paid developer account), so macOS blocks it the first time you open
+it. You only have to allow it once:
 
-### ⚠️ Handling Homebrew Warnings
+1. Open SimDeeplink. macOS shows a warning that it couldn't verify the app; click **Done**.
+2. Open **System Settings › Privacy & Security** and scroll down to the **Security** section.
+3. Next to "SimDeeplink was blocked to protect your Mac", click **Open Anyway**, then confirm with your password or
+   Touch ID and click **Open Anyway** again.
 
-If you see a warning like:
+Or, from the Terminal, remove the quarantine flag instead:
 
-> Warning: Cask 'simdeeplink' is not notarized and may not be trusted by macOS.
+```bash
+xattr -dr com.apple.quarantine /Applications/SimDeeplink.app
+```
 
-or
+### Requirements
 
-> “SimDeeplink.app” can’t be opened because Apple cannot check it for malicious software.
+macOS 14 or later. iOS simulators need Xcode (or the Command Line Tools); Android needs the Android SDK
+platform-tools (`adb`) and, to start an emulator from the app, the `emulator` package.
 
-This is expected if the app is not yet notarized (since we’re not using an Apple Developer account).
+### Build from source
 
-To run it safely:
-1. Open `System Settings` → `Privacy & Security`
-2. Scroll down until you see the blocked app message
-3. Click **“Open Anyway”**
-4. Then confirm by clicking **“Open”** in the popup
+Only needed to work on SimDeeplink itself (see [Getting Started](#-getting-started)).
 
-macOS will remember your choice, and you won’t see the warning again.
-
-### 🧰 Manual Installation (Alternative)
-
-If you prefer manual installation:
-1. Download the latest release from GitHub Releases
-2. Unzip the file
-3. Move SimDeeplink.app to your Applications folder
-
-### ✅ Uninstallation
-
-To uninstall SimDeeplink and remove its configuration files:
-
-  ```bash
-  brew uninstall --zap --cask simdeeplink
-  ```
+Maintainers: see [RELEASING.md](RELEASING.md).
 
 ## 💡 Why Use This?
 - Eliminate repetitive drag-and-drop steps for deeplink testing.

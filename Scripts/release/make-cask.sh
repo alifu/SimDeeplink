@@ -24,7 +24,7 @@ cask "simdeeplink" do
   desc "Menu bar app that runs deeplinks on iOS simulators and Android emulators"
   homepage "https://github.com/alifu/SimDeeplink"
 
-  depends_on macos: :sequoia
+  depends_on macos: :sonoma
 
   app "stage/SimDeeplink.app"
 
