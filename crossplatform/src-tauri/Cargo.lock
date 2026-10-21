@@ -4040,6 +4040,7 @@ dependencies = [
  "image",
  "monitor",
  "objc",
+ "os_pipe",
  "serde",
  "serde_json",
  "tauri",
