@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: macOS app (build + unit tests)
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        run: |
+          xcodebuild -project SimDeeplink.xcodeproj -scheme SimDeeplink \
+            -destination 'platform=macOS' \
+            -only-testing:SimDeeplinkTests \
+            CODE_SIGN_IDENTITY=- \
+            test
+
+  app-release:
+    name: macOS app (Release build, universal)
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          xcodebuild -project SimDeeplink.xcodeproj -scheme SimDeeplink -configuration Release \
+            -derivedDataPath build CLANG_COVERAGE_MAPPING=NO ENABLE_CODE_COVERAGE=NO \
+            CODE_SIGN_IDENTITY=- ONLY_ACTIVE_ARCH=NO build
+      - name: The shipped app must not be sandboxed (it runs xcrun and adb)
+        run: |
+          # The key may be present and set to false; only "true" means sandboxed.
+          if codesign -d --entitlements - build/Build/Products/Release/SimDeeplink.app 2>&1 | grep -A2 "app-sandbox" | grep -q "\[Bool\] true"; then
+            echo "Release build is sandboxed" >&2
+            exit 1
+          fi
+
+  versions:
+    name: Versions agree
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sh Scripts/release/check-version.sh

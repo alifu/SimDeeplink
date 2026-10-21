@@ -25,9 +25,11 @@ struct SimulatorSectionView: View {
                 ),
                 items: $watcher.simulators
             )
+            .accessibilityIdentifier("simulatorComboBox")
             
             Button(action: {
-                watcher.bootSimulator(udid: selectedSimulator!.udid) {
+                guard let udid = selectedSimulator?.udid else { return }
+                watcher.bootSimulator(udid: udid) {
                     watcher.refreshSimulators()
                 }
             }) {

@@ -21,5 +21,6 @@ struct BootedEmulatorView: View {
             ),
             items: $watcher.bootedEmulators
         )
+        .accessibilityIdentifier("emulatorTargetComboBox")
     }
 }
