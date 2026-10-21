@@ -53,15 +53,21 @@ struct AndroidEmulatorComboBox: NSViewRepresentable {
     }
     
     func updateNSView(_ nsView: NSComboBox, context: Context) {
-        context.coordinator.allItems = items
-        context.coordinator.filteredItems = items
-        nsView.reloadData()
-        
-        // restore selected item
-        if let selected = selectedEmulator,
-           let index = items.firstIndex(where: { $0.id == selected.id }) {
-            nsView.selectItem(at: index)
+        let coordinator = context.coordinator
+        coordinator.parent = self
+        // SwiftUI updates this view whenever any field of the screen changes; only a new list may reset the search.
+        if coordinator.allItems != items {
+            coordinator.allItems = items
+            coordinator.filteredItems = items
+            nsView.reloadData()
         }
+        
+        // restore selected item, but never overwrite what the user is typing
+        guard nsView.currentEditor() == nil,
+              let selected = selectedEmulator,
+              let index = coordinator.filteredItems.firstIndex(where: { $0.id == selected.id }),
+              nsView.indexOfSelectedItem != index else { return }
+        nsView.selectItem(at: index)
     }
     
     func makeCoordinator() -> Coordinator {

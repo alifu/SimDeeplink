@@ -199,3 +199,26 @@ struct AdbServiceTests {
         #expect(service.boot(avdNamed: "Pixel_8").output == AdbService.missingEmulatorMessage)
     }
 }
+
+struct AdbAvdNameFallbackTests {
+    @Test("A running AVD whose console is unreachable is not listed again as stopped")
+    func fallsBackToSystemProperty() {
+        let runner = FakeCommandRunner { executable, arguments in
+            switch (executable, arguments) {
+            case (Fixtures.adbPath, let args) where args.contains("emu"):
+                return CommandResult(output: "KO: unauthorized", exitCode: 1)
+            case (Fixtures.adbPath, let args) where args.contains("getprop"):
+                return CommandResult(output: "Pixel_8_API_35\n", exitCode: 0)
+            case (Fixtures.adbPath, _):
+                return CommandResult(output: "List of devices attached\nemulator-5554\tdevice model:Pixel_8\n", exitCode: 0)
+            default:
+                return CommandResult(output: "Pixel_8_API_35\nTablet_API_35\n", exitCode: 0)
+            }
+        }
+
+        let devices = Fixtures.adbService(runner: runner).listDevices()
+
+        #expect(devices.map(\.name) == ["Pixel_8_API_35", "Tablet_API_35"])
+        #expect(devices.map(\.isBooted) == [true, false])
+    }
+}

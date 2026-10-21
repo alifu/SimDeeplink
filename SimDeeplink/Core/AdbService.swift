@@ -102,8 +102,14 @@ struct AdbService {
 
     private func avdName(of serial: String, adb: String) -> String? {
         guard serial.hasPrefix("emulator-") else { return nil }
-        let result = runner.run(adb, arguments: ["-s", serial, "emu", "avd", "name"])
-        return result.succeeded ? AdbParser.parseAvdName(fromEmuOutput: result.output) : nil
+        let console = runner.run(adb, arguments: ["-s", serial, "emu", "avd", "name"])
+        if console.succeeded, let name = AdbParser.parseAvdName(fromEmuOutput: console.output) { return name }
+
+        // The emulator console can be unreachable; the system property gives the same name, so a running AVD is
+        // never listed a second time as stopped.
+        let property = runner.run(adb, arguments: ["-s", serial, "shell", "getprop", "ro.boot.qemu.avd_name"])
+        let name = property.trimmedOutput
+        return property.succeeded && name.range(of: "^[A-Za-z0-9._-]+$", options: .regularExpression) != nil ? name : nil
     }
 
     // MARK: - Actions
