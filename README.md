@@ -6,7 +6,7 @@
 
 
 [![Swift Version](https://img.shields.io/badge/Swift-5.0+-orange.svg)](https://swift.org)
-[![Platform](https://img.shields.io/badge/Platform-macOS-blue.svg)](https://developer.apple.com/macos)
+[![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-blue.svg)](https://github.com/alifu/SimDeeplink/releases)
 [![Xcode](https://img.shields.io/badge/Xcode-15+-blue.svg)](https://developer.apple.com/xcode/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Version](https://img.shields.io/badge/Version-0.0.6-yellow.svg)](https://github.com/alifu/SimDeeplink/releases)
@@ -14,7 +14,15 @@
 
 
 
-SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and running app deeplinks in Simulator effortless. Unlike other solutions, there’s no need to drag and drop URLs onto Simulator—you simply paste and run! The app lives comfortably in your macOS menu bar, allowing quick access at any time.
+SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and running app deeplinks in Simulator effortless. Unlike other solutions, there’s no need to drag and drop URLs onto Simulator—you simply paste and run! The app lives comfortably in your macOS menu bar (or the Windows and Linux system tray), allowing quick access at any time.
+
+| | iOS Simulator | Android Emulator |
+|---|:---:|:---:|
+| macOS | ✅ | ✅ |
+| Windows | – | ✅ |
+| Linux (Debian, Ubuntu, Fedora) | – | ✅ |
+
+The iOS Simulator only exists on macOS, so Windows and Linux show the Android section alone.
 
 |Apple Simulator|Android Emulator|
 |:---:|:---:|
@@ -31,6 +39,8 @@ SimDeeplink (Deeplink Runner) is a desktop utility designed to make testing and 
 
 ## 🧭 Install
 
+### macOS
+
 With [Homebrew](https://brew.sh) (no Xcode needed; this installs the prebuilt app):
 
 ```bash
@@ -39,18 +49,17 @@ brew install --cask alifu/tap/simdeeplink
 
 Open it from Launchpad, Spotlight or `open -a SimDeeplink`; the icon appears in the menu bar.
 
-### Update and uninstall
-
 ```bash
-brew update && brew upgrade --cask simdeeplink
-brew uninstall --cask simdeeplink          # add --zap to also remove its settings
+brew update && brew upgrade --cask simdeeplink     # update
+brew uninstall --cask simdeeplink                  # uninstall (add --zap to also remove its settings)
 ```
 
 Or download `SimDeeplink.zip` from the [latest release](https://github.com/alifu/SimDeeplink/releases/latest), unzip it and
 drag `SimDeeplink.app` into `/Applications`. To update that way, quit the app and replace it with the new one; to remove
 it, quit it and move it to the Trash.
 
-### "SimDeeplink can't be opened" warning
+<details>
+<summary><b>"SimDeeplink can't be opened" warning</b></summary>
 
 SimDeeplink isn't notarized by Apple (that needs a paid developer account), so macOS blocks it the first time you open
 it. You only have to allow it once:
@@ -65,15 +74,59 @@ Or, from the Terminal, remove the quarantine flag instead:
 ```bash
 xattr -dr com.apple.quarantine /Applications/SimDeeplink.app
 ```
+</details>
+
+### Windows
+
+Download `SimDeeplink_X.Y.Z_x64-setup.exe` (or the `.msi`) from the
+[latest release](https://github.com/alifu/SimDeeplink/releases/latest) and run it. The `.exe` installs for your user only
+and needs no administrator rights. The icon appears in the system tray (click `^` if Windows hides it).
+
+- **Update:** run the installer of the newer version; it replaces the old one.
+- **Uninstall:** **Settings › Apps › Installed apps › SimDeeplink › Uninstall**.
+
+<details>
+<summary><b>"Windows protected your PC" warning</b></summary>
+
+The installer isn't code-signed (that needs a paid certificate), so Microsoft Defender SmartScreen warns about it. Click
+**More info**, then **Run anyway**. To check the download first, compare
+`Get-FileHash .\SimDeeplink_X.Y.Z_x64-setup.exe` with `SHA256SUMS-windows.txt` on the release page.
+</details>
+
+### Linux (Debian, Ubuntu, Fedora)
+
+Download the package for your distribution from the [latest release](https://github.com/alifu/SimDeeplink/releases/latest).
+It was tested on Debian 12, Ubuntu 22.04 and 24.04, and Fedora 40 and 41.
+
+| Distribution | Install | Update | Uninstall |
+|---|---|---|---|
+| Debian, Ubuntu | `sudo apt install ./SimDeeplink_X.Y.Z_amd64.deb` | install the newer `.deb` the same way | `sudo apt remove sim-deeplink` |
+| Fedora | `sudo dnf install ./SimDeeplink-X.Y.Z-1.x86_64.rpm` | `sudo dnf upgrade ./SimDeeplink-X.Y.Z-1.x86_64.rpm` | `sudo dnf remove sim-deeplink` |
+
+Start **SimDeeplink** from your application menu, or run `simdeeplink`. The icon appears in the system tray.
+
+<details>
+<summary><b>No tray icon on GNOME</b></summary>
+
+GNOME (the default Ubuntu and Fedora desktop) doesn't show tray icons without an extension. Install
+**AppIndicator and KStatusNotifierItem Support** (on Ubuntu it is already included) and log in again. Without a tray,
+SimDeeplink opens as a normal window instead, so it still works. Wayland doesn't let apps place their own windows, so on
+Linux the window opens in the middle of the screen instead of under the icon.
+</details>
 
 ### Requirements
 
-macOS 14 or later. iOS simulators need Xcode (or the Command Line Tools); Android needs the Android SDK
-platform-tools (`adb`) and, to start an emulator from the app, the `emulator` package.
+| | |
+|---|---|
+| macOS | macOS 14 or later. iOS simulators need Xcode (or the Command Line Tools). |
+| Windows | Windows 10 or later with the WebView2 runtime (included in Windows 11 and current Windows 10). |
+| Linux | A desktop with GTK 3 and WebKitGTK 4.1 (installed with the package). |
+| Android (all systems) | The Android SDK platform-tools (`adb`) and, to start an emulator from the app, the `emulator` package. SimDeeplink looks in `ANDROID_HOME`, `ANDROID_SDK_ROOT`, the default Android Studio SDK folder and your `PATH`; if you have several, pick one in the **ADB Executable** list. |
 
 ### Build from source
 
-Only needed to work on SimDeeplink itself (see [Getting Started](#-getting-started)).
+Only needed to work on SimDeeplink itself (see [Getting Started](#-getting-started) for the macOS app and
+[`crossplatform/README.md`](./crossplatform/README.md) for the Windows, Linux and macOS (Tauri) app).
 
 Maintainers: see [RELEASING.md](RELEASING.md).
 
@@ -93,8 +146,9 @@ Maintainers: see [RELEASING.md](RELEASING.md).
 |✅|**Distribute via Homebrew:** Publish the app through Homebrew for easy installation. Currently, run the project from source as described above.|
 |✅|**Android Emulator Support:** Enable deeplink runs in Android Emulator for cross-platform testing.|
 |✅|**MacOS App:** Build for MacOS (Using Swift, SwiftUI).|
-|🚧|**Windows App:** Build for Windows (Using Tauri -- Rust and React).|
-|🔄|**Linux App:** Build for Linux (Using Tauri -- Rust and React).|
+|✅|**Windows App:** Build for Windows (Using Tauri -- Rust and React). Android section only.|
+|✅|**Linux App:** Build for Linux (Using Tauri -- Rust and React). Android section only; `.deb` and `.rpm`.|
+|🔄|**One app everywhere:** The Tauri app replaces the Swift app on macOS too (the Swift app stays on the `legacy` branch).|
 
 ## ⚙️ Contributing
 Contributions and feedback are welcome! Please open an issue or submit a pull request with ideas or improvements.
