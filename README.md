@@ -5,9 +5,8 @@
 # SimDeeplink (Menu Bar)
 
 
-[![Swift Version](https://img.shields.io/badge/Swift-5.0+-orange.svg)](https://swift.org)
+[![Tauri](https://img.shields.io/badge/Tauri-2-orange.svg)](https://tauri.app)
 [![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-blue.svg)](https://github.com/alifu/SimDeeplink/releases)
-[![Xcode](https://img.shields.io/badge/Xcode-15+-blue.svg)](https://developer.apple.com/xcode/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 [![Version](https://img.shields.io/badge/Version-0.0.6-yellow.svg)](https://github.com/alifu/SimDeeplink/releases)
 [![Homebrew Tap](https://img.shields.io/badge/Homebrew-alifu%2Ftap-blue.svg)](https://github.com/alifu/homebrew-tap)
@@ -125,8 +124,7 @@ Linux the window opens in the middle of the screen instead of under the icon.
 
 ### Build from source
 
-Only needed to work on SimDeeplink itself (see [Getting Started](#-getting-started) for the macOS app and
-[`crossplatform/README.md`](./crossplatform/README.md) for the Windows, Linux and macOS (Tauri) app).
+Only needed to work on SimDeeplink itself; see [`DEVELOPMENT.md`](./DEVELOPMENT.md).
 
 Maintainers: see [RELEASING.md](RELEASING.md).
 
@@ -145,48 +143,26 @@ Maintainers: see [RELEASING.md](RELEASING.md).
 |✅|**Add Timer for Deeplink Execution:** Allow users to specify a delay before running a deeplink, making it easier to wait for the simulator to be ready.|
 |✅|**Distribute via Homebrew:** Publish the app through Homebrew for easy installation. Currently, run the project from source as described above.|
 |✅|**Android Emulator Support:** Enable deeplink runs in Android Emulator for cross-platform testing.|
-|✅|**MacOS App:** Build for MacOS (Using Swift, SwiftUI).|
+|✅|**MacOS App:** Build for MacOS (first in Swift/SwiftUI, kept on the [`legacy`](https://github.com/alifu/SimDeeplink/tree/legacy) branch; now Tauri).|
 |✅|**Windows App:** Build for Windows (Using Tauri -- Rust and React). Android section only.|
 |✅|**Linux App:** Build for Linux (Using Tauri -- Rust and React). Android section only; `.deb` and `.rpm`.|
-|🔄|**One app everywhere:** The Tauri app replaces the Swift app on macOS too (the Swift app stays on the `legacy` branch).|
+|✅|**One app everywhere:** One Tauri app (Rust and React) for macOS, Windows and Linux.|
 
 ## ⚙️ Contributing
 Contributions and feedback are welcome! Please open an issue or submit a pull request with ideas or improvements.
 
 ### 🚀 Getting Started
 
-#### Prerequisites
-- Xcode 15 or later  
-- MacOS 14.0+ target  
-- Swift 5.9+
-
-#### Installation
-
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/alifu/SimDeeplink.git
-   cd SimDeeplink
-   ```
-2. Open the project:
-
-   ```bash
-   open SimDeeplink.xcodeproj
-   ```
-3. Select the appropriate target and scheme (usually 'SimDeeplink' or similar).
-4. Build and run (⌘R). The app should appear in your menu bar.
-
-### 🧪 Running the tests
-
 ```bash
-# unit tests (Swift Testing, no simulator needed)
-xcodebuild -project SimDeeplink.xcodeproj -scheme SimDeeplink -destination 'platform=macOS' -only-testing:SimDeeplinkTests test
-
-# UI tests (run the real window with canned devices, `-UITest`)
-xcodebuild -project SimDeeplink.xcodeproj -scheme SimDeeplink -destination 'platform=macOS' test
+git clone https://github.com/alifu/SimDeeplink.git
+cd SimDeeplink
+npm ci
+npm run tauri dev
 ```
 
-Maintainers: see [`RELEASING.md`](./RELEASING.md) for how a release and the Homebrew cask are published.
+Needs Node 22 and a current stable Rust (and, on Linux, the WebKitGTK and AppIndicator development packages). Tests,
+project layout and how to build the installers: [`DEVELOPMENT.md`](./DEVELOPMENT.md). Maintainers: see
+[`RELEASING.md`](./RELEASING.md) for how a release and the Homebrew cask are published.
 
 ## 🪪 License
 MIT License. See [`LICENSE`](./LICENSE) for details.

@@ -1,11 +1,12 @@
-# SimDeeplink (Tauri)
+# Developing SimDeeplink
 
-The cross-platform SimDeeplink: Rust backend, React + Tailwind window. It runs on macOS, Windows and Linux.
+SimDeeplink is a Tauri app: Rust backend, React + Tailwind window. It runs on macOS, Windows and Linux.
 
 - **macOS:** menu bar popup with the iOS Simulator and Android Emulator sections.
 - **Windows and Linux:** system tray popup with the Android Emulator section only (there is no iOS Simulator there).
 
-Install instructions for users are in the [main README](../README.md#-install).
+Install instructions for users are in the [README](README.md#-install). The original Swift app is on the
+[`legacy`](https://github.com/alifu/SimDeeplink/tree/legacy) branch.
 
 ## Layout
 
@@ -39,4 +40,4 @@ npx tauri build --target universal-apple-darwin --bundles app   # macOS
 ```
 
 CI builds all of them and installs the Linux packages in Debian, Ubuntu and Fedora containers; see
-[`RELEASING.md`](../RELEASING.md).
+[`RELEASING.md`](RELEASING.md).

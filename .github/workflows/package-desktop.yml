@@ -8,29 +8,25 @@ jobs:
   windows:
     name: Windows (NSIS + msi)
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: crossplatform
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: crossplatform/package-lock.json
+          cache-dependency-path: package-lock.json
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: crossplatform/src-tauri
+          workspaces: src-tauri
       - run: npm ci
       - run: npx tauri build --bundles nsis,msi
       - name: Collect installers
         shell: bash
-        working-directory: .
         run: |
           mkdir -p out
-          cp crossplatform/src-tauri/target/release/bundle/nsis/*-setup.exe out/
-          cp crossplatform/src-tauri/target/release/bundle/msi/*.msi out/
+          cp src-tauri/target/release/bundle/nsis/*-setup.exe out/
+          cp src-tauri/target/release/bundle/msi/*.msi out/
           (cd out && sha256sum * > SHA256SUMS-windows.txt && cat SHA256SUMS-windows.txt)
       - uses: actions/upload-artifact@v4
         with:
@@ -41,13 +37,9 @@ jobs:
   linux:
     name: Linux (deb + rpm)
     runs-on: ubuntu-22.04
-    defaults:
-      run:
-        working-directory: crossplatform
     steps:
       - uses: actions/checkout@v4
       - name: System libraries and rpm tools
-        working-directory: .
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libgtk-3-dev libssl-dev patchelf rpm
@@ -55,19 +47,18 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: crossplatform/package-lock.json
+          cache-dependency-path: package-lock.json
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: crossplatform/src-tauri
+          workspaces: src-tauri
       - run: npm ci
       - run: npx tauri build --bundles deb,rpm
       - name: Collect packages
-        working-directory: .
         run: |
           mkdir -p out
-          cp crossplatform/src-tauri/target/release/bundle/deb/*.deb out/
-          cp crossplatform/src-tauri/target/release/bundle/rpm/*.rpm out/
+          cp src-tauri/target/release/bundle/deb/*.deb out/
+          cp src-tauri/target/release/bundle/rpm/*.rpm out/
           (cd out && sha256sum * > SHA256SUMS-linux.txt && cat SHA256SUMS-linux.txt)
       - uses: actions/upload-artifact@v4
         with:
@@ -75,44 +66,48 @@ jobs:
           path: out/*
           if-no-files-found: error
 
-  # Built here so a broken bundle shows up before the Swift app is replaced; not published until that switch.
   macos:
     name: macOS (universal app, ad-hoc signed)
     runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: crossplatform
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: crossplatform/package-lock.json
+          cache-dependency-path: package-lock.json
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-apple-darwin,x86_64-apple-darwin
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: crossplatform/src-tauri
+          workspaces: src-tauri
       - run: npm ci
       - run: npx tauri build --target universal-apple-darwin --bundles app
       - name: Check the app and pack the zip (same layout the Homebrew cask expects)
-        working-directory: .
         run: |
-          app="crossplatform/src-tauri/target/universal-apple-darwin/release/bundle/macos/SimDeeplink.app"
+          app="src-tauri/target/universal-apple-darwin/release/bundle/macos/SimDeeplink.app"
           codesign -dv "$app" 2>&1 | grep -E "Signature|Identifier"
           lipo -archs "$app/Contents/MacOS/"* | grep -q "x86_64 arm64"
           /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$app/Contents/Info.plist" | grep -qx "com.alifu.SimDeeplink"
           mkdir -p out/stage
           cp -R "$app" out/stage/
           cp LICENSE out/stage/
+          cat > out/stage/README.txt <<'TXT'
+          SimDeeplink is not notarized by Apple (that needs a paid developer account), so macOS blocks it the first time.
+          Move SimDeeplink.app to /Applications, then allow it once:
+            System Settings > Privacy & Security > "Open Anyway", or run
+            xattr -dr com.apple.quarantine /Applications/SimDeeplink.app
+          More: https://github.com/alifu/SimDeeplink#install
+          TXT
+          # A fixed name, so the link .../releases/latest/download/SimDeeplink.zip always works.
           ditto -c -k --keepParent out/stage out/SimDeeplink.zip
           rm -rf out/stage
+          (cd out && shasum -a 256 SimDeeplink.zip > SimDeeplink.zip.sha256)
       - uses: actions/upload-artifact@v4
         with:
           name: desktop-macos
-          path: out/SimDeeplink.zip
+          path: out/*
           if-no-files-found: error
 
   install-deb:

@@ -1,6 +1,6 @@
 name: Release
 
-# Push a tag such as v0.1.1 (the same number as MARKETING_VERSION in the Xcode project).
+# Push a tag such as v0.1.0 (the same number as in tauri.conf.json, Cargo.toml and package.json).
 on:
   push:
     tags: ["v*"]
@@ -9,71 +9,67 @@ permissions:
   contents: write
 
 jobs:
-  release:
-    name: Build and publish
-    runs-on: macos-26
+  version:
+    name: Tag and app agree
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: sh Scripts/release/check-version.sh "${GITHUB_REF_NAME#v}"
 
-      - name: Tag and app name the same version
-        run: sh Scripts/release/check-version.sh "${GITHUB_REF_NAME#v}"
+  package:
+    needs: version
+    uses: ./.github/workflows/package-desktop.yml
 
-      - name: Test the app
-        run: |
-          xcodebuild -project SimDeeplink.xcodeproj -scheme SimDeeplink \
-            -destination 'platform=macOS' -only-testing:SimDeeplinkTests \
-            CODE_SIGN_IDENTITY=- test
-
-      - name: Build the app (universal, ad-hoc signed)
-        run: |
-          xcodebuild -project SimDeeplink.xcodeproj -scheme SimDeeplink -configuration Release \
-            -derivedDataPath build CLANG_COVERAGE_MAPPING=NO ENABLE_CODE_COVERAGE=NO \
-            CODE_SIGN_IDENTITY=- ONLY_ACTIVE_ARCH=NO build
-
-      - name: Pack the prebuilt zip
-        run: |
-          mkdir -p dist/stage
-          cp -R build/Build/Products/Release/SimDeeplink.app dist/stage/
-          cp LICENSE dist/stage/
-          cat > dist/stage/README.txt <<'TXT'
-          SimDeeplink is not notarized by Apple (that needs a paid developer account), so macOS blocks it the first time.
-          Move SimDeeplink.app to /Applications, then allow it once:
-            System Settings > Privacy & Security > "Open Anyway", or run
-            xattr -dr com.apple.quarantine /Applications/SimDeeplink.app
-          More: https://github.com/alifu/SimDeeplink#install
-          TXT
-          # A fixed name, so the link .../releases/latest/download/SimDeeplink.zip always works.
-          ditto -c -k --keepParent dist/stage dist/SimDeeplink.zip
-          (cd dist && shasum -a 256 SimDeeplink.zip > SimDeeplink.zip.sha256)
+  publish:
+    name: Publish the release
+    needs: package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: desktop-*
+          path: assets
 
       - name: Homebrew cask and release notes
         run: |
           version="${GITHUB_REF_NAME#v}"
-          zip_sha="$(cut -d ' ' -f 1 dist/SimDeeplink.zip.sha256)"
-          sh Scripts/release/make-cask.sh "$version" "$zip_sha" > dist/simdeeplink.rb
+          zip_sha="$(cut -d ' ' -f 1 assets/desktop-macos/SimDeeplink.zip.sha256)"
+          sh Scripts/release/make-cask.sh "$version" "$zip_sha" > assets/simdeeplink.rb
           {
-            echo "Install the prebuilt app (no Xcode needed to build it):"
+            echo "## macOS"
             echo
             echo '```'
-            echo "brew install --cask alifu/tap/simdeeplink"
+            echo "brew install --cask alifu/tap/simdeeplink     # or: brew upgrade --cask simdeeplink"
             echo '```'
             echo
-            echo "Or download \`SimDeeplink.zip\`, unzip it and drag \`SimDeeplink.app\` into \`/Applications\`."
-            echo "SimDeeplink is not notarized: allow it once under System Settings > Privacy & Security > Open Anyway,"
-            echo "or run \`xattr -dr com.apple.quarantine /Applications/SimDeeplink.app\`."
+            echo "Or download \`SimDeeplink.zip\` and drag \`SimDeeplink.app\` into \`/Applications\`. It is not notarized:"
+            echo "allow it once under System Settings > Privacy & Security > Open Anyway."
+            echo
+            echo "## Windows"
+            echo
+            echo "Run \`SimDeeplink_${version}_x64-setup.exe\` (or the \`.msi\`). It is not code-signed: SmartScreen > More info > Run anyway."
+            echo
+            echo "## Linux"
+            echo
+            echo "- Debian / Ubuntu: \`sudo apt install ./SimDeeplink_${version}_amd64.deb\`"
+            echo "- Fedora: \`sudo dnf install ./SimDeeplink-${version}-1.x86_64.rpm\`"
+            echo
+            echo "Windows and Linux show the Android Emulator section only (the iOS Simulator exists only on macOS)."
+            echo "Full instructions: https://github.com/alifu/SimDeeplink#-install"
             echo
             echo "SHA-256 of \`SimDeeplink.zip\`: \`$zip_sha\`"
-          } > dist/notes.md
+          } > notes.md
 
-      - name: Publish the release
+      - name: Publish
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/SimDeeplink.zip dist/SimDeeplink.zip.sha256 dist/simdeeplink.rb \
-            --title "SimDeeplink ${GITHUB_REF_NAME#v}" --notes-file dist/notes.md
+          gh release create "$GITHUB_REF_NAME" --title "SimDeeplink ${GITHUB_REF_NAME#v}" --notes-file notes.md \
+            assets/desktop-macos/* assets/simdeeplink.rb assets/desktop-windows/* assets/desktop-linux/*
 
       # Optional: with a TAP_TOKEN secret (a token that can push to alifu/homebrew-tap) the cask is updated by itself.
-      # Without it, copy dist/simdeeplink.rb (attached to the release) to Casks/simdeeplink.rb in the tap.
+      # Without it, copy simdeeplink.rb (attached to the release) to Casks/simdeeplink.rb in the tap.
       - name: Update the Homebrew tap
         env:
           TAP_TOKEN: ${{ secrets.TAP_TOKEN }}
@@ -81,7 +77,7 @@ jobs:
         run: |
           git clone "https://x-access-token:${TAP_TOKEN}@github.com/alifu/homebrew-tap.git" tap
           mkdir -p tap/Casks
-          cp dist/simdeeplink.rb tap/Casks/simdeeplink.rb
+          cp assets/simdeeplink.rb tap/Casks/simdeeplink.rb
           cd tap
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
