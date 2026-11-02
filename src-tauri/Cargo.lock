@@ -3795,7 +3795,7 @@ dependencies = [
 
 [[package]]
 name = "simdeeplink"
-version = "0.0.9"
+version = "0.0.10"
 dependencies = [
  "cocoa 0.25.0",
  "image",
