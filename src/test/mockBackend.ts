@@ -26,6 +26,7 @@ export interface Backend {
   status?: Partial<Record<Platform, ToolStatus>>;
   open?: Outcome;
   boot?: Outcome;
+  shake?: Outcome;
 }
 
 /** Fakes the Rust commands and returns a spy that records every call as `[command, args]`. */
@@ -45,6 +46,8 @@ export function mockBackend(backend: Backend = {}) {
         return backend.devices?.[platform] ?? [];
       case "boot_device":
         return backend.boot ?? { ok: true, message: "Booted" };
+      case "shake_device":
+        return backend.shake ?? { ok: true, message: "Shook the simulator" };
       case "open_deeplink":
         return backend.open ?? { ok: true, message: "Opened" };
       default:

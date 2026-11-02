@@ -115,6 +115,11 @@ impl Backend {
         }
     }
 
+    /// Shake gesture for the iOS Simulator. `target` is a UDID; without one the booted simulator is used.
+    pub fn shake(&self, target: Option<&str>) -> Outcome {
+        self.shake_ios(target.map(str::trim).filter(|t| !t.is_empty()))
+    }
+
     /// `target` is the chosen device id; without one the only running device is used.
     pub fn open_deeplink(&self, platform: Platform, url: &str, target: Option<&str>, package: Option<&str>, adb_path: &str) -> Outcome {
         let url = url.trim();
@@ -173,6 +178,16 @@ impl Backend {
     #[cfg(target_os = "macos")]
     fn open_on_ios(&self, url: &str, target: Option<&str>) -> Outcome {
         Outcome::from(self.simctl().open_url(url, target.unwrap_or("booted")), String::new)
+    }
+
+    #[cfg(target_os = "macos")]
+    fn shake_ios(&self, target: Option<&str>) -> Outcome {
+        Outcome::from(self.simctl().shake(target.unwrap_or("booted")), || "Shook the simulator".to_string())
+    }
+
+    #[cfg(not(target_os = "macos"))]
+    fn shake_ios(&self, _target: Option<&str>) -> Outcome {
+        Outcome::failure(IOS_UNAVAILABLE_MESSAGE)
     }
 
     #[cfg(not(target_os = "macos"))]
@@ -250,6 +265,20 @@ mod tests {
         } else {
             assert_eq!(platforms, vec![Platform::Android]);
         }
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn shake_targets_the_booted_simulator_by_default_and_a_chosen_one_when_given() {
+        let runner = Arc::new(FakeRunner::silent());
+        let backend = backend(&runner, env_with_adb());
+
+        assert!(backend.shake(None).ok);
+        assert!(backend.shake(Some(" UDID-2 ")).ok);
+
+        let calls = runner.calls();
+        assert_eq!(calls[0][3], "booted");
+        assert_eq!(calls[1][3], "UDID-2");
     }
 
     #[cfg(not(target_os = "macos"))]

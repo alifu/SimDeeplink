@@ -176,6 +176,36 @@ describe("delay", () => {
   });
 });
 
+describe("shake", () => {
+  it("shakes the chosen running simulator", async () => {
+    const calls = mockBackend({ platforms: ["ios", "android"], devices: { ios: [iphone("iPhone 17", "U1", true)] } });
+    const user = userEvent.setup();
+    await renderReady();
+    await screen.findByRole("option", { name: /iPhone 17/ });
+
+    await user.selectOptions(screen.getByLabelText("Device"), "U1");
+    await user.click(screen.getByRole("button", { name: "Shake" }));
+
+    await waitFor(() => expect(screen.getByTestId("output")).toHaveTextContent("Shook the simulator"));
+    expect(callsTo(calls, "shake_device")[0]).toEqual({ target: "U1" });
+  });
+
+  it("is disabled while no simulator is running", async () => {
+    mockBackend({ platforms: ["ios", "android"], devices: { ios: [iphone("iPhone 17", "U1", false)] } });
+    await renderReady();
+    await screen.findByRole("option", { name: /iPhone 17/ });
+
+    expect(screen.getByRole("button", { name: "Shake" })).toBeDisabled();
+  });
+
+  it("is not offered for Android", async () => {
+    mockBackend({ platforms: ["android"] });
+    await renderReady();
+
+    expect(screen.queryByRole("button", { name: "Shake" })).not.toBeInTheDocument();
+  });
+});
+
 describe("devices", () => {
   it("starts a stopped emulator and reads the list again", async () => {
     const calls = mockBackend({ devices: { android: [android("Tablet", "avd:Tablet", false)] }, boot: { ok: true, message: "Booted Tablet" } });

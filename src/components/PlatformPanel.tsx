@@ -24,6 +24,7 @@ export function PlatformPanel({ platform, adbPaths, adbPathsReady }: Props) {
   const [chosenAdb, setChosenAdb] = useState("");
   const [bootOutcome, setBootOutcome] = useState<Outcome | null>(null);
   const [booting, setBooting] = useState(false);
+  const [shaking, setShaking] = useState(false);
 
   // The first adb found is the default until the user picks another.
   const adbPath = isAndroid ? chosenAdb || adbPaths[0] || undefined : undefined;
@@ -37,6 +38,8 @@ export function PlatformPanel({ platform, adbPaths, adbPathsReady }: Props) {
   }, [deviceId, selected, loading]);
 
   const toolsOk = status?.ok ?? false;
+  // Shake needs a running simulator: the chosen one, or any when none is chosen.
+  const canShake = toolsOk && !shaking && (selected ? selected.isBooted : devices.some((d) => d.isBooted));
   const shown = run.outcome ?? bootOutcome ?? (status && !status.ok ? { ok: false, message: status.message ?? "" } : null);
   const shownOrError = error ? { ok: false, message: error } : shown;
 
@@ -51,6 +54,17 @@ export function PlatformPanel({ platform, adbPaths, adbPathsReady }: Props) {
     } finally {
       setBooting(false);
       await refresh();
+    }
+  };
+
+  const shake = async () => {
+    setShaking(true);
+    try {
+      setBootOutcome(await api.shake(selected?.id));
+    } catch (e) {
+      setBootOutcome({ ok: false, message: errorMessage(e) });
+    } finally {
+      setShaking(false);
     }
   };
 
@@ -141,6 +155,17 @@ export function PlatformPanel({ platform, adbPaths, adbPathsReady }: Props) {
             />
           </label>
           <span className="flex-1" />
+          {!isAndroid && (
+            <button
+              aria-label="Shake"
+              title="Shake (⌘⌃⇧Z from any app)"
+              className={buttonClass}
+              disabled={!canShake}
+              onClick={() => void shake()}
+            >
+              Shake
+            </button>
+          )}
           {run.running ? (
             <button className={buttonClass} onClick={run.cancel}>
               Cancel

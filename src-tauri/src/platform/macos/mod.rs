@@ -2,6 +2,7 @@
 
 mod commands;
 mod fns;
+mod shortcut;
 mod tray;
 
 pub use commands::*;
@@ -11,6 +12,7 @@ pub fn setup(app: &mut tauri::App) -> tauri::Result<()> {
 
     app.set_activation_policy(tauri::ActivationPolicy::Accessory);
     tray::create(app.app_handle())?;
+    shortcut::register(app.app_handle())?;
     Ok(())
 }
 

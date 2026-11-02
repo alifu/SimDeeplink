@@ -11,6 +11,7 @@ export const api = {
   listDevices: (platform: Platform, adbPath?: string) => invoke<Device[]>("list_devices", { platform, adbPath }),
   bootDevice: (platform: Platform, id: string, adbPath?: string) =>
     invoke<Outcome>("boot_device", { platform, id, adbPath }),
+  shake: (target?: string) => invoke<Outcome>("shake_device", { target }),
   openDeeplink: (args: { platform: Platform; url: string; target?: string; pkg?: string; adbPath?: string }) =>
     invoke<Outcome>("open_deeplink", {
       platform: args.platform,

@@ -35,6 +35,7 @@ The iOS Simulator only exists on macOS, so Windows and Linux show the Android se
 - **Specific Simulator Target:** Choose your right target for running deeplink.
 - **Menu Bar Access:** Launch and use the app from your menu bar on any Mac desktop, for maximum convenience.
 - **Simulator Booting:** The app can automatically boot the Simulator if it’s not running, so you can execute deeplinks immediately.
+- **Shake (macOS, iOS Simulator only):** Xcode 27's Simulator has no Device > Shake item, so SimDeeplink adds one. Click **Shake** next to the Delay field, or press **⌘⌃⇧Z** from any app (a global shortcut). It shakes the simulator you picked, or the booted one if you picked none. It posts the `com.apple.UIKit.SimulatorShake` notification with `simctl`, and falls back to Simulator's Ctrl+Cmd+Z shortcut, which needs Accessibility permission for SimDeeplink.
 
 ## 🧭 Install
 

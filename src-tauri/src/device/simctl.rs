@@ -7,6 +7,13 @@ use super::simctl_parser;
 
 const XCRUN: &str = "/usr/bin/xcrun";
 const OPEN: &str = "/usr/bin/open";
+const OSASCRIPT: &str = "/usr/bin/osascript";
+/// Darwin notification the simulated UIKit listens to for a shake gesture.
+const SHAKE_NOTIFICATION: &str = "com.apple.UIKit.SimulatorShake";
+/// Simulator's own shortcut for Device > Shake (Ctrl+Cmd+Z), used when the notification does not work.
+const SHAKE_KEYSTROKE_SCRIPT: &str = r#"tell application "Simulator" to activate
+delay 0.2
+tell application "System Events" to keystroke "z" using {control down, command down}"#;
 const BOOT_TIMEOUT: Duration = Duration::from_secs(120);
 const ALREADY_BOOTED: &str = "current state: Booted";
 
@@ -61,6 +68,16 @@ impl SimctlService {
     /// `target` is a UDID, or "booted" for whichever simulator is running.
     pub fn open_url(&self, url: &str, target: &str) -> CommandResult {
         self.runner.run_default(XCRUN, &["simctl", "openurl", target, url])
+    }
+
+    /// Shakes the simulator for xcode versions without Device > Shake. `target` is a UDID or "booted".
+    /// Posts the shake notification inside the simulator; falls back to the Simulator keyboard shortcut.
+    pub fn shake(&self, target: &str) -> CommandResult {
+        let notify = self.runner.run_default(XCRUN, &["simctl", "spawn", target, "notifyutil", "-p", SHAKE_NOTIFICATION]);
+        if notify.succeeded() {
+            return notify;
+        }
+        self.runner.run_default(OSASCRIPT, &["-e", SHAKE_KEYSTROKE_SCRIPT])
     }
 }
 
@@ -153,6 +170,33 @@ mod tests {
         service(&runner).open_url(url, "UDID-1");
 
         assert_eq!(runner.calls(), vec![strings(&["/usr/bin/xcrun", "simctl", "openurl", "UDID-1", url])]);
+    }
+
+    #[test]
+    fn shake_posts_the_notification_inside_the_target_simulator() {
+        let runner = Arc::new(FakeRunner::silent());
+
+        let result = service(&runner).shake("UDID-1");
+
+        assert!(result.succeeded());
+        assert_eq!(
+            runner.calls(),
+            vec![strings(&["/usr/bin/xcrun", "simctl", "spawn", "UDID-1", "notifyutil", "-p", "com.apple.UIKit.SimulatorShake"])]
+        );
+    }
+
+    #[test]
+    fn shake_falls_back_to_the_keyboard_shortcut_when_the_notification_fails() {
+        let runner = Arc::new(FakeRunner::new(|exe, _| {
+            if exe.ends_with("xcrun") { CommandResult::new("no device", 1) } else { CommandResult::new("", 0) }
+        }));
+
+        let result = service(&runner).shake("booted");
+
+        let calls = runner.calls();
+        assert!(result.succeeded());
+        assert_eq!(calls.len(), 2);
+        assert_eq!(calls[1][0], "/usr/bin/osascript");
     }
 
     #[test]

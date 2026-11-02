@@ -39,6 +39,12 @@ pub async fn boot_device(backend: State<'_, Backend>, platform: Platform, id: St
 }
 
 #[tauri::command]
+pub async fn shake_device(backend: State<'_, Backend>, target: Option<String>) -> Result<Outcome, String> {
+    let backend = backend.inner().clone();
+    blocking(move || backend.shake(target.as_deref())).await
+}
+
+#[tauri::command]
 pub async fn open_deeplink(
     backend: State<'_, Backend>,
     platform: Platform,

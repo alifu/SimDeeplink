@@ -26,6 +26,7 @@ fn main() {
             api::adb_paths,
             api::list_devices,
             api::boot_device,
+            api::shake_device,
             api::open_deeplink,
             api::quit_app
         ])
