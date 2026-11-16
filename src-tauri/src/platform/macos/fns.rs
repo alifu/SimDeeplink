@@ -14,6 +14,8 @@ use tauri_nspanel::{
     panel_delegate, ManagerExt, WebviewWindowExt,
 };
 
+type PanelHandle = tauri_nspanel::objc_id::ShareId<tauri_nspanel::raw_nspanel::RawNSPanel>;
+
 #[allow(non_upper_case_globals)]
 const NSWindowStyleMaskNonActivatingPanel: i32 = 1 << 7;
 
@@ -38,13 +40,25 @@ pub fn swizzle_to_menubar_panel(app_handle: &tauri::AppHandle) {
 
     panel.set_style_mask(NSWindowStyleMaskNonActivatingPanel);
 
+    join_all_spaces(&panel);
+
+    panel.set_delegate(panel_delegate);
+}
+
+/// Lets the panel appear on whichever desktop (Space) or full-screen app is active.
+fn join_all_spaces(panel: &PanelHandle) {
     panel.set_collection_behaviour(
         NSWindowCollectionBehavior::NSWindowCollectionBehaviorCanJoinAllSpaces
             | NSWindowCollectionBehavior::NSWindowCollectionBehaviorStationary
             | NSWindowCollectionBehavior::NSWindowCollectionBehaviorFullScreenAuxiliary,
     );
+}
 
-    panel.set_delegate(panel_delegate);
+/// Shows the panel on the active Space. The behavior is applied again on every show because the window
+/// layer can reset it, which left the panel stuck on the Space it was first opened in.
+pub fn show_panel(panel: &PanelHandle) {
+    join_all_spaces(panel);
+    panel.show();
 }
 
 pub fn setup_menubar_panel_listeners(app_handle: &AppHandle) {

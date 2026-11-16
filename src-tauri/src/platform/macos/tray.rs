@@ -8,7 +8,7 @@ use image::GenericImageView;
 
 const TRAY_ICON: &[u8] = include_bytes!("../../../icons/tray-icon.png");
 
-use super::fns::position_menubar_panel;
+use super::fns::{position_menubar_panel, show_panel};
 
 pub fn create(app_handle: &AppHandle) -> tauri::Result<TrayIcon> {
     // Embedded in the binary: a bundled app has no "icons/" folder next to its working directory.
@@ -34,7 +34,7 @@ pub fn create(app_handle: &AppHandle) -> tauri::Result<TrayIcon> {
 
                     position_menubar_panel(app_handle, 0.0);
 
-                    panel.show();
+                    show_panel(&panel);
                 }
             }
         })

@@ -3,7 +3,7 @@ use std::sync::Once;
 use tauri_nspanel::ManagerExt;
 
 use super::fns::{
-    setup_menubar_panel_listeners, swizzle_to_menubar_panel, update_menubar_appearance,
+    setup_menubar_panel_listeners, show_panel, swizzle_to_menubar_panel, update_menubar_appearance,
 };
 
 static INIT: Once = Once::new();
@@ -23,12 +23,12 @@ pub fn init(app_handle: tauri::AppHandle) {
 pub fn show_menubar_panel(app_handle: tauri::AppHandle) {
     let panel = app_handle.get_webview_panel("main").unwrap();
 
-    panel.show();
+    show_panel(&panel);
 }
 
 /// Shows the panel if it exists yet (it is created when the page first calls `init`).
 pub fn reveal(app_handle: &tauri::AppHandle) {
     if let Ok(panel) = app_handle.get_webview_panel("main") {
-        panel.show();
+        show_panel(&panel);
     }
 }
